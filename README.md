@@ -1,1 +1,1 @@
-# reframed-protos
+# sso-protos
