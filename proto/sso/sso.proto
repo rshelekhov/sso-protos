@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package auth;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "rshelekhov.sso.v1;ssov1";
 
 service Auth {
@@ -15,7 +17,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  string token = 1;
+  TokenData tokenData = 1;
 }
 
 message LoginRequest {
@@ -25,5 +27,15 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  string token = 1;
+  TokenData tokenData = 1;
+}
+
+message TokenData {
+  string accessToken = 1;
+  string refreshToken = 2;
+  string domain = 3;
+  string path = 4;
+  google.protobuf.Timestamp expiresAt = 5;
+  bool httpOnly = 6;
+  map<string, string> additional_fields = 7;
 }
