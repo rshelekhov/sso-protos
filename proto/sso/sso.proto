@@ -36,7 +36,8 @@ message LoginResponse {
 
 message RefreshRequest {
   string refreshToken = 1;
-  UserDeviceData userDeviceData = 2;
+  int32 app_id = 2;
+  UserDeviceData userDeviceData = 3;
 }
 
 message RefreshResponse {
