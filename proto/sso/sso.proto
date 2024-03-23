@@ -10,8 +10,13 @@ service Auth {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
 }
 
+// Register method
 message RegisterRequest {
   string email = 1;
   string password = 2;
@@ -23,6 +28,7 @@ message RegisterResponse {
   TokenData tokenData = 1;
 }
 
+// Login method
 message LoginRequest {
   string email = 1;
   string password = 2;
@@ -31,9 +37,9 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  TokenData tokenData = 1;
 }
 
+// Refresh tokens method
 message RefreshRequest {
   string refreshToken = 1;
   int32 app_id = 2;
@@ -44,6 +50,51 @@ message RefreshResponse {
   TokenData tokenData = 1;
 }
 
+// Logout user method
+message LogoutRequest {
+  string refreshToken = 1;
+  int32 app_id = 2;
+  UserDeviceData userDeviceData = 3;
+}
+
+message LogoutResponse {
+  TokenData tokenData = 1;
+}
+
+// Get user method
+message GetUserRequest {
+  string userId = 1;
+  int32 app_id = 2;
+}
+
+message GetUserResponse {
+  string userId = 1;
+  string email = 2;
+  google.protobuf.Timestamp updatedAt = 3;
+}
+
+// Update user method
+message UpdateUserRequest {
+  string userId = 1;
+  string email = 2;
+  string password = 3;
+  int32 app_id = 4;
+}
+
+message UpdateUserResponse {
+}
+
+// Delete user method
+message DeleteUserRequest {
+  string userId = 1;
+  int32 app_id = 2;
+  UserDeviceData userDeviceData = 3;
+}
+
+message DeleteUserResponse {
+}
+
+// Custom types
 message UserDeviceData {
   string userAgent = 1;
   string ip = 2;
