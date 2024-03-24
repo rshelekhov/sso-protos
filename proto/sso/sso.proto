@@ -37,6 +37,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
+  TokenData tokenData = 1;
 }
 
 // Refresh tokens method
