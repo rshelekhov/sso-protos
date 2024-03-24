@@ -58,7 +58,6 @@ message LogoutRequest {
 }
 
 message LogoutResponse {
-  TokenData tokenData = 1;
 }
 
 // Get user method
