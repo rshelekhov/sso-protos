@@ -12,7 +12,7 @@ service Auth {
   rpc Logout (LogoutRequest) returns (LogoutResponse);
 
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
-  rpc GetJWK (GetJWKRequest) returns (GetJWKResponse);
+  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
 
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
@@ -64,12 +64,12 @@ message RefreshResponse {
 }
 
 // Get JWK method
-message GetJWKRequest {
+message GetJWKSRequest {
   int32 app_id = 1;
 }
 
-message GetJWKResponse {
-   JWK jwk = 1;
+message GetJWKSResponse {
+   repeated JWK jwks = 1;
 }
 
 message JWK {

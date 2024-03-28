@@ -26,7 +26,7 @@ type AuthClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
-	GetJWK(ctx context.Context, in *GetJWKRequest, opts ...grpc.CallOption) (*GetJWKResponse, error)
+	GetJWKS(ctx context.Context, in *GetJWKSRequest, opts ...grpc.CallOption) (*GetJWKSResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
@@ -76,9 +76,9 @@ func (c *authClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...gr
 	return out, nil
 }
 
-func (c *authClient) GetJWK(ctx context.Context, in *GetJWKRequest, opts ...grpc.CallOption) (*GetJWKResponse, error) {
-	out := new(GetJWKResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/GetJWK", in, out, opts...)
+func (c *authClient) GetJWKS(ctx context.Context, in *GetJWKSRequest, opts ...grpc.CallOption) (*GetJWKSResponse, error) {
+	out := new(GetJWKSResponse)
+	err := c.cc.Invoke(ctx, "/auth.Auth/GetJWKS", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ type AuthServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
-	GetJWK(context.Context, *GetJWKRequest) (*GetJWKResponse, error)
+	GetJWKS(context.Context, *GetJWKSRequest) (*GetJWKSResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
@@ -143,8 +143,8 @@ func (UnimplementedAuthServer) Logout(context.Context, *LogoutRequest) (*LogoutR
 func (UnimplementedAuthServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
-func (UnimplementedAuthServer) GetJWK(context.Context, *GetJWKRequest) (*GetJWKResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetJWK not implemented")
+func (UnimplementedAuthServer) GetJWKS(context.Context, *GetJWKSRequest) (*GetJWKSResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetJWKS not implemented")
 }
 func (UnimplementedAuthServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
@@ -240,20 +240,20 @@ func _Auth_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_GetJWK_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetJWKRequest)
+func _Auth_GetJWKS_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetJWKSRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).GetJWK(ctx, in)
+		return srv.(AuthServer).GetJWKS(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/GetJWK",
+		FullMethod: "/auth.Auth/GetJWKS",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).GetJWK(ctx, req.(*GetJWKRequest))
+		return srv.(AuthServer).GetJWKS(ctx, req.(*GetJWKSRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -336,8 +336,8 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auth_Refresh_Handler,
 		},
 		{
-			MethodName: "GetJWK",
-			Handler:    _Auth_GetJWK_Handler,
+			MethodName: "GetJWKS",
+			Handler:    _Auth_GetJWKS_Handler,
 		},
 		{
 			MethodName: "GetUser",
