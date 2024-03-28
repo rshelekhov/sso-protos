@@ -12,7 +12,7 @@ service Auth {
   rpc Logout (LogoutRequest) returns (LogoutResponse);
 
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
-  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
+  rpc GetJWK (GetJWKRequest) returns (GetJWKResponse);
 
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
@@ -63,17 +63,22 @@ message RefreshResponse {
   TokenData tokenData = 1;
 }
 
-// Get JWKS method
-message GetJWKSRequest {
+// Get JWK method
+message GetJWKRequest {
   int32 app_id = 1;
 }
 
-message GetJWKSResponse {
-   JWKS jwks = 1;
+message GetJWKResponse {
+   JWK jwk = 1;
 }
 
-message JWKS {
-  map<string, string> keys = 1;
+message JWK {
+  string kty = 1;
+  string use = 2;
+  string kid = 3;
+  string alg = 4;
+  string n = 5;
+  string e = 6;
 }
 
 // Get user method
