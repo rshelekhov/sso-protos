@@ -9,8 +9,11 @@ option go_package = "rshelekhov.sso.v1;ssov1";
 service Auth {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
-  rpc Refresh (RefreshRequest) returns (RefreshResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
+
+  rpc Refresh (RefreshRequest) returns (RefreshResponse);
+  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
+
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
@@ -40,6 +43,15 @@ message LoginResponse {
   TokenData tokenData = 1;
 }
 
+// Logout user method
+message LogoutRequest {
+  int32 app_id = 1;
+  UserDeviceData userDeviceData = 2;
+}
+
+message LogoutResponse {
+}
+
 // Refresh tokens method
 message RefreshRequest {
   string refreshToken = 1;
@@ -51,13 +63,17 @@ message RefreshResponse {
   TokenData tokenData = 1;
 }
 
-// Logout user method
-message LogoutRequest {
+// Get JWKS method
+message GetJWKSRequest {
   int32 app_id = 1;
-  UserDeviceData userDeviceData = 2;
 }
 
-message LogoutResponse {
+message GetJWKSResponse {
+   JWKS jwks = 1;
+}
+
+message JWKS {
+  map<string, string> keys = 1;
 }
 
 // Get user method
