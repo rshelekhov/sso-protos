@@ -9,14 +9,14 @@ option go_package = "rshelekhov.sso.v1;ssov1";
 service Auth {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc Logout (LogoutRequest) returns (Empty);
 
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
   rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
 
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
-  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (Empty);
+  rpc DeleteUser (DeleteUserRequest) returns (Empty);
 }
 
 // Register method
@@ -29,6 +29,7 @@ message RegisterRequest {
 
 message RegisterResponse {
   TokenData tokenData = 1;
+  string kid = 2;
 }
 
 // Login method
@@ -41,15 +42,13 @@ message LoginRequest {
 
 message LoginResponse {
   TokenData tokenData = 1;
+  string kid = 2;
 }
 
 // Logout user method
 message LogoutRequest {
   int32 app_id = 1;
   UserDeviceData userDeviceData = 2;
-}
-
-message LogoutResponse {
 }
 
 // Refresh tokens method
@@ -100,16 +99,10 @@ message UpdateUserRequest {
   int32 app_id = 3;
 }
 
-message UpdateUserResponse {
-}
-
 // Delete user method
 message DeleteUserRequest {
   int32 app_id = 1;
   UserDeviceData userDeviceData = 2;
-}
-
-message DeleteUserResponse {
 }
 
 // Custom types
@@ -127,3 +120,5 @@ message TokenData {
   bool httpOnly = 6;
   map<string, string> additional_fields = 7;
 }
+
+message Empty {}
