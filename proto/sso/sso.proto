@@ -29,7 +29,6 @@ message RegisterRequest {
 
 message RegisterResponse {
   TokenData tokenData = 1;
-  string kid = 2;
 }
 
 // Login method
@@ -42,7 +41,6 @@ message LoginRequest {
 
 message LoginResponse {
   TokenData tokenData = 1;
-  string kid = 2;
 }
 
 // Logout user method
