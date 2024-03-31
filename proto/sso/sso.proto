@@ -114,11 +114,12 @@ message UserDeviceData {
 message TokenData {
   string accessToken = 1;
   string refreshToken = 2;
-  string domain = 3;
-  string path = 4;
-  google.protobuf.Timestamp expiresAt = 5;
-  bool httpOnly = 6;
-  map<string, string> additional_fields = 7;
+  string kid = 3;
+  string domain = 4;
+  string path = 5;
+  google.protobuf.Timestamp expiresAt = 6;
+  bool httpOnly = 7;
+  map<string, string> additional_fields = 8;
 }
 
 message Empty {}
