@@ -80,14 +80,12 @@ message JWK {
 
 // Get user method
 message GetUserRequest {
-  string userId = 1;
-  int32 app_id = 2;
+  int32 app_id = 1;
 }
 
 message GetUserResponse {
-  string userId = 1;
-  string email = 2;
-  google.protobuf.Timestamp updatedAt = 3;
+  string email = 1;
+  google.protobuf.Timestamp updatedAt = 2;
 }
 
 // Update user method
