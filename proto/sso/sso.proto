@@ -91,8 +91,9 @@ message GetUserResponse {
 // Update user method
 message UpdateUserRequest {
   string email = 1;
-  string password = 2;
-  int32 app_id = 3;
+  string currentPassword = 2;
+  string updatedPassword = 3;
+  int32 app_id = 4;
 }
 
 // Delete user method
