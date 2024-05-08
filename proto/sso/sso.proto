@@ -26,6 +26,7 @@ message RegisterRequest {
   string password = 2;
   int32 app_id = 3;
   UserDeviceData userDeviceData = 4;
+  TokensTTL tokensTTL = 5;
 }
 
 message RegisterResponse {
@@ -38,6 +39,7 @@ message LoginRequest {
   string password = 2;
   int32 app_id = 3;
   UserDeviceData userDeviceData = 4;
+  TokensTTL tokensTTL = 5;
 }
 
 message LoginResponse {
@@ -55,6 +57,7 @@ message RefreshRequest {
   string refreshToken = 1;
   int32 app_id = 2;
   UserDeviceData userDeviceData = 3;
+  TokensTTL tokensTTL = 4;
 }
 
 message RefreshResponse {
@@ -118,6 +121,11 @@ message TokenData {
   google.protobuf.Timestamp expiresAt = 5;
   bool httpOnly = 6;
   map<string, string> additional_fields = 7;
+}
+
+message TokensTTL {
+  google.protobuf.Duration accessToken = 1;
+  google.protobuf.Duration refreshToken = 2;
 }
 
 message Empty {}
