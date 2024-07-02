@@ -36,7 +36,7 @@ message RegisterResponse {
 message LoginRequest {
   string email = 1;
   string password = 2;
-  int32 app_id = 3;
+  string app_id = 3;
   UserDeviceData userDeviceData = 4;
 }
 
@@ -46,14 +46,14 @@ message LoginResponse {
 
 // Logout user method
 message LogoutRequest {
-  int32 app_id = 1;
+  string app_id = 1;
   UserDeviceData userDeviceData = 2;
 }
 
 // Refresh tokens method
 message RefreshRequest {
   string refreshToken = 1;
-  int32 app_id = 2;
+  string app_id = 2;
   UserDeviceData userDeviceData = 3;
 }
 
@@ -63,7 +63,7 @@ message RefreshResponse {
 
 // Get JWK method
 message GetJWKSRequest {
-  int32 app_id = 1;
+  string app_id = 1;
 }
 
 message GetJWKSResponse {
@@ -82,7 +82,7 @@ message JWK {
 
 // Get user method
 message GetUserRequest {
-  int32 app_id = 1;
+  string app_id = 1;
 }
 
 message GetUserResponse {
@@ -95,12 +95,12 @@ message UpdateUserRequest {
   string email = 1;
   string currentPassword = 2;
   string updatedPassword = 3;
-  int32 app_id = 4;
+  string app_id = 4;
 }
 
 // Delete user method
 message DeleteUserRequest {
-  int32 app_id = 1;
+  string app_id = 1;
   UserDeviceData userDeviceData = 2;
 }
 
