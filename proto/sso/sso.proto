@@ -26,6 +26,7 @@ service Auth {
 // Register app method
 message RegisterAppRequest {
   string appID = 1;
+  string clientSecret = 2;
 }
 
 // GetAppIDByClientSecret method
