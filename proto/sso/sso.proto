@@ -8,7 +8,10 @@ import "google/protobuf/duration.proto";
 option go_package = "rshelekhov.sso.v1;ssov1";
 
 service Auth {
-  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc RegisterApp (RegisterAppRequest) returns (Empty);
+  rpc GetAppIDByClientSecret (GetAppIDByClientSecretRequest) returns (GetAppIDByClientSecretResponse);
+
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc Logout (LogoutRequest) returns (Empty);
 
@@ -20,15 +23,30 @@ service Auth {
   rpc DeleteUser (DeleteUserRequest) returns (Empty);
 }
 
+// Register app method
+message RegisterAppRequest {
+  string appID = 1;
+}
+
+// GetAppIDByClientSecret method
+message GetAppIDByClientSecretRequest {
+  string clientSecret = 1;
+}
+
+message GetAppIDByClientSecretResponse {
+  string appID = 1;
+}
+
+// TODO: remove _, replace by camelCase
 // Register method
-message RegisterRequest {
+message RegisterUserRequest {
   string email = 1;
   string password = 2;
   string app_id = 3;
   UserDeviceData userDeviceData = 4;
 }
 
-message RegisterResponse {
+message RegisterUserResponse {
   TokenData tokenData = 1;
 }
 
