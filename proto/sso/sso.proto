@@ -9,7 +9,6 @@ option go_package = "rshelekhov.sso.v1;ssov1";
 
 service Auth {
   rpc RegisterApp (RegisterAppRequest) returns (Empty);
-  rpc GetAppIDByClientSecret (GetAppIDByClientSecretRequest) returns (GetAppIDByClientSecretResponse);
 
   rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
@@ -25,18 +24,7 @@ service Auth {
 
 // Register app method
 message RegisterAppRequest {
-  string appID = 1;
-  string appName = 2;
-  string clientSecret = 3;
-}
-
-// GetAppIDByClientSecret method
-message GetAppIDByClientSecretRequest {
-  string clientSecret = 1;
-}
-
-message GetAppIDByClientSecretResponse {
-  string appID = 1;
+  string appName = 1;
 }
 
 // TODO: remove _, replace by camelCase
