@@ -33,7 +33,8 @@ message RegisterUserRequest {
   string email = 1;
   string password = 2;
   string app_id = 3;
-  UserDeviceData userDeviceData = 4;
+  string confirmEmailEndpoint =4;
+  UserDeviceData userDeviceData = 5;
 }
 
 message RegisterUserResponse {
