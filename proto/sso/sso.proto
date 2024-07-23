@@ -33,7 +33,7 @@ message RegisterUserRequest {
   string email = 1;
   string password = 2;
   string app_id = 3;
-  string confirmEmailEndpoint =4;
+  string verifyEmailEndpoint =4;
   UserDeviceData userDeviceData = 5;
 }
 
