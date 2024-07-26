@@ -110,7 +110,6 @@ message UpdateUserRequest {
 // Delete user method
 message DeleteUserRequest {
   string app_id = 1;
-  UserDeviceData userDeviceData = 2;
 }
 
 // Custom types
