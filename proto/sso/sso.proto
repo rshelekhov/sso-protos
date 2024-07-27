@@ -11,6 +11,7 @@ service Auth {
   rpc RegisterApp (RegisterAppRequest) returns (Empty);
 
   rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+  rpc VerifyEmail (VerifyEmailRequest) returns (Empty);
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc Logout (LogoutRequest) returns (Empty);
 
@@ -39,6 +40,11 @@ message RegisterUserRequest {
 
 message RegisterUserResponse {
   TokenData tokenData = 1;
+}
+
+// Verify email method
+message VerifyEmailRequest {
+  string verificationToken = 1;
 }
 
 // Login method
