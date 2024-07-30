@@ -102,7 +102,8 @@ message GetUserRequest {
 
 message GetUserResponse {
   string email = 1;
-  google.protobuf.Timestamp updatedAt = 2;
+  bool verified = 2;
+  google.protobuf.Timestamp updatedAt = 3;
 }
 
 // Update user method
