@@ -12,7 +12,10 @@ service Auth {
 
   rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
   rpc VerifyEmail (VerifyEmailRequest) returns (Empty);
+
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (Empty);
+  rpc ChangePassword (ChangePasswordRequest) returns (Empty);
   rpc Logout (LogoutRequest) returns (Empty);
 
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
@@ -57,6 +60,19 @@ message LoginRequest {
 
 message LoginResponse {
   TokenData tokenData = 1;
+}
+
+// Reset password method
+message ResetPasswordRequest {
+  string email = 1;
+  string app_id = 2;
+}
+
+// Change password method
+message ChangePasswordRequest {
+  string resetPasswordToken = 1;
+  string updatedPassword = 2;
+  string app_id = 3;
 }
 
 // Logout user method
