@@ -66,6 +66,7 @@ message LoginResponse {
 message ResetPasswordRequest {
   string email = 1;
   string app_id = 2;
+  string confirmChangePasswordURL = 3;
 }
 
 // Change password method
