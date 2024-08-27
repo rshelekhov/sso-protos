@@ -31,12 +31,11 @@ message RegisterAppRequest {
   string appName = 1;
 }
 
-// TODO: remove _, replace by camelCase
 // Register method
 message RegisterUserRequest {
   string email = 1;
   string password = 2;
-  string app_id = 3;
+  string appID = 3;
   string verificationURL =4;
   UserDeviceData userDeviceData = 5;
 }
@@ -54,7 +53,7 @@ message VerifyEmailRequest {
 message LoginRequest {
   string email = 1;
   string password = 2;
-  string app_id = 3;
+  string appID = 3;
   UserDeviceData userDeviceData = 4;
 }
 
@@ -65,7 +64,7 @@ message LoginResponse {
 // Reset password method
 message ResetPasswordRequest {
   string email = 1;
-  string app_id = 2;
+  string appID = 2;
   string confirmChangePasswordURL = 3;
 }
 
@@ -73,19 +72,19 @@ message ResetPasswordRequest {
 message ChangePasswordRequest {
   string resetPasswordToken = 1;
   string updatedPassword = 2;
-  string app_id = 3;
+  string appID = 3;
 }
 
 // Logout user method
 message LogoutRequest {
-  string app_id = 1;
+  string appID = 1;
   UserDeviceData userDeviceData = 2;
 }
 
 // Refresh tokens method
 message RefreshRequest {
   string refreshToken = 1;
-  string app_id = 2;
+  string appID = 2;
   UserDeviceData userDeviceData = 3;
 }
 
@@ -95,7 +94,7 @@ message RefreshResponse {
 
 // Get JWK method
 message GetJWKSRequest {
-  string app_id = 1;
+  string appID = 1;
 }
 
 message GetJWKSResponse {
@@ -114,7 +113,7 @@ message JWK {
 
 // Get user method
 message GetUserRequest {
-  string app_id = 1;
+  string appID = 1;
 }
 
 message GetUserResponse {
@@ -128,12 +127,12 @@ message UpdateUserRequest {
   string email = 1;
   string currentPassword = 2;
   string updatedPassword = 3;
-  string app_id = 4;
+  string appID = 4;
 }
 
 // Delete user method
 message DeleteUserRequest {
-  string app_id = 1;
+  string appID = 1;
 }
 
 // Custom types
@@ -149,7 +148,7 @@ message TokenData {
   string path = 4;
   google.protobuf.Timestamp expiresAt = 5;
   bool httpOnly = 6;
-  map<string, string> additional_fields = 7;
+  map<string, string> additionalFields = 7;
 }
 
 message Empty {}
