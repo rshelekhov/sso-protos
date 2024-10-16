@@ -5,8 +5,26 @@ package auth;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
+
+// swagger-ui base info,
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "gRPC SSO API"
+    version: "0.1.1"
+    contact: {
+      name: "Roman Shelekhov"
+      url: "https://github.com/rshelekhov/sso/"
+      email: "shelekhoff@gmail.com"
+    }
+    license: {
+      name: "BSD 3-Clause License"
+      url: "https://github.com/rshelekhov/sso/blob/main/LICENSE"
+    }
+  }
+};
 
 service Auth {
   rpc RegisterApp (RegisterAppRequest) returns (Empty) {

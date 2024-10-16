@@ -1,8 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "sso/sso.proto",
-    "version": "version not set"
+    "title": "gRPC SSO API",
+    "version": "0.1.1",
+    "contact": {
+      "name": "Roman Shelekhov",
+      "url": "https://github.com/rshelekhov/sso/",
+      "email": "shelekhoff@gmail.com"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/rshelekhov/sso/blob/main/LICENSE"
+    }
   },
   "tags": [
     {
