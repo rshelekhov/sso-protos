@@ -4,40 +4,22 @@ package auth;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
-
-// swagger-ui base info,
-option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
-  info: {
-    title: "gRPC SSO API"
-    version: "0.1.1"
-    contact: {
-      name: "Roman Shelekhov"
-      url: "https://github.com/rshelekhov/sso/"
-      email: "shelekhoff@gmail.com"
-    }
-    license: {
-      name: "BSD 3-Clause License"
-      url: "https://github.com/rshelekhov/sso/blob/main/LICENSE"
-    }
-  }
-};
 
 service Auth {
   rpc RegisterApp (RegisterAppRequest) returns (RegisterAppResponse);
   rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
   rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
-  rpc ResetPassword (ResetPasswordRequest) returns (Empty);
-  rpc ChangePassword (ChangePasswordRequest) returns (Empty);
-  rpc Logout (LogoutRequest) returns (Empty);
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
   rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
-  rpc UpdateUser (UpdateUserRequest) returns (Empty);
-  rpc DeleteUser (DeleteUserRequest) returns (Empty);
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
 }
 
 // Register app method
@@ -88,6 +70,9 @@ message ResetPasswordRequest {
   string confirm_url = 3;
 }
 
+message ResetPasswordResponse {
+}
+
 // Change password method
 message ChangePasswordRequest {
   string token = 1;
@@ -95,10 +80,16 @@ message ChangePasswordRequest {
   string app_id = 3;
 }
 
+message ChangePasswordResponse {
+}
+
 // Logout user method
 message LogoutRequest {
   string app_id = 1;
   UserDeviceData user_device_data = 2;
+}
+
+message LogoutResponse {
 }
 
 // Refresh tokens method
@@ -150,9 +141,15 @@ message UpdateUserRequest {
   string app_id = 4;
 }
 
+message UpdateUserResponse {
+}
+
 // Delete user method
 message DeleteUserRequest {
   string app_id = 1;
+}
+
+message DeleteUserResponse {
 }
 
 // Custom types
@@ -170,5 +167,3 @@ message TokenData {
   bool http_only = 6;
   map<string, string> additional_fields = 7;
 }
-
-message Empty {}
