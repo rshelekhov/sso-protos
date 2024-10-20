@@ -4,7 +4,6 @@ package auth;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
-import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
@@ -27,80 +26,26 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 service Auth {
-  rpc RegisterApp (RegisterAppRequest) returns (Empty) {
-    option (google.api.http) = {
-      post: "/v1/register-app"
-      body: "*"
-    };
-  };
-  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/register"
-      body: "*"
-    };
-  };
-  rpc VerifyEmail (VerifyEmailRequest) returns (Empty) {
-    option (google.api.http) = {
-      post: "/v1/verify-email"
-      body: "*"
-    };
-  };
-  rpc Login (LoginRequest) returns (LoginResponse) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/login"
-      body: "*"
-    };
-  };
-  rpc ResetPassword (ResetPasswordRequest) returns (Empty) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/reset-password"
-      body: "*"
-    };
-  };
-  rpc ChangePassword (ChangePasswordRequest) returns (Empty) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/change-password"
-      body: "*"
-    };
-  };
-  rpc Logout (LogoutRequest) returns (Empty) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/logout"
-      body: "*"
-    };
-  };
-  rpc Refresh (RefreshRequest) returns (RefreshResponse) {
-    option (google.api.http) = {
-      post: "/v1/{app_id}/refresh"
-      body: "*"
-    };
-  };
-  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse) {
-    option (google.api.http) = {
-      get: "/v1/{app_id}/.well-known/jwks.json"
-    };
-  };
-  rpc GetUser (GetUserRequest) returns (GetUserResponse) {
-    option (google.api.http) = {
-      get: "/v1/{app_id}/user"
-    };
-  };
-  rpc UpdateUser (UpdateUserRequest) returns (Empty) {
-    option (google.api.http) = {
-      patch: "/v1/{app_id}/user"
-      body: "*"
-    };
-  };
-  rpc DeleteUser (DeleteUserRequest) returns (Empty) {
-    option (google.api.http) = {
-      delete: "/v1/{app_id}/user"
-    };
-  };
+  rpc RegisterApp (RegisterAppRequest) returns (RegisterAppResponse);
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (Empty);
+  rpc ChangePassword (ChangePasswordRequest) returns (Empty);
+  rpc Logout (LogoutRequest) returns (Empty);
+  rpc Refresh (RefreshRequest) returns (RefreshResponse);
+  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (Empty);
+  rpc DeleteUser (DeleteUserRequest) returns (Empty);
 }
 
 // Register app method
 message RegisterAppRequest {
-  string appName = 1;
+  string app_name = 1;
+}
+
+message RegisterAppResponse {
 }
 
 // Register method
@@ -109,7 +54,7 @@ message RegisterUserRequest {
   string password = 2;
   string app_id = 3;
   string verification_url =4;
-  UserDeviceData userDeviceData = 5;
+  UserDeviceData user_device_data = 5;
 }
 
 message RegisterUserResponse {
@@ -119,6 +64,9 @@ message RegisterUserResponse {
 // Verify email method
 message VerifyEmailRequest {
   string token = 1;
+}
+
+message VerifyEmailResponse {
 }
 
 // Login method
