@@ -3,7 +3,6 @@ syntax = "proto3";
 package auth;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
 
@@ -110,7 +109,6 @@ message GetJWKSRequest {
 
 message GetJWKSResponse {
    repeated JWK jwks = 1;
-   google.protobuf.Duration ttl = 2;
 }
 
 message JWK {
