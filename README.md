@@ -2,10 +2,7 @@
 This repository contains Protocol Buffers definitions and generated Go code for the Single Sign-On (SSO) service. The service provides authentication and user management functionality via gRPC and REST API endpoints.
 
 ## Related Projects
-This repository is used as a dependency for two main projects:
-
-- [SSO Service](https://github.com/rshelekhov/sso) - gRPC service implementation
-- [SSO Gateway](https://github.com/rshelekhov/sso-gateway) - HTTP gateway service
+This repository is used as a dependency for the main project — [SSO Service](https://github.com/rshelekhov/sso) - gRPC service implementation
 
 ## Overview
 The SSO service supports the following features:
