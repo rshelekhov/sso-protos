@@ -33,9 +33,8 @@ message RegisterAppResponse {
 message RegisterUserRequest {
   string email = 1;
   string password = 2;
-  string app_id = 3;
-  string verification_url =4;
-  UserDeviceData user_device_data = 5;
+  string verification_url =3;
+  UserDeviceData user_device_data = 4;
 }
 
 message RegisterUserResponse {
@@ -54,8 +53,7 @@ message VerifyEmailResponse {
 message LoginRequest {
   string email = 1;
   string password = 2;
-  string app_id = 3;
-  UserDeviceData user_device_data = 4;
+  UserDeviceData user_device_data = 3;
 }
 
 message LoginResponse {
@@ -65,8 +63,7 @@ message LoginResponse {
 // Reset password method
 message ResetPasswordRequest {
   string email = 1;
-  string app_id = 2;
-  string confirm_url = 3;
+  string confirm_url = 2;
 }
 
 message ResetPasswordResponse {
@@ -76,7 +73,6 @@ message ResetPasswordResponse {
 message ChangePasswordRequest {
   string token = 1;
   string updated_password = 2;
-  string app_id = 3;
 }
 
 message ChangePasswordResponse {
@@ -84,8 +80,7 @@ message ChangePasswordResponse {
 
 // Logout user method
 message LogoutRequest {
-  string app_id = 1;
-  UserDeviceData user_device_data = 2;
+  UserDeviceData user_device_data = 1;
 }
 
 message LogoutResponse {
@@ -94,8 +89,7 @@ message LogoutResponse {
 // Refresh tokens method
 message RefreshRequest {
   string refresh_token = 1;
-  string app_id = 2;
-  UserDeviceData user_device_data = 3;
+  UserDeviceData user_device_data = 2;
 }
 
 message RefreshResponse {
@@ -104,7 +98,6 @@ message RefreshResponse {
 
 // Get JWK method
 message GetJWKSRequest {
-  string app_id = 1;
 }
 
 message GetJWKSResponse {
@@ -122,7 +115,6 @@ message JWK {
 
 // Get user method
 message GetUserRequest {
-  string app_id = 1;
 }
 
 message GetUserResponse {
@@ -136,7 +128,6 @@ message UpdateUserRequest {
   string email = 1;
   string current_password = 2;
   string updated_password = 3;
-  string app_id = 4;
 }
 
 message UpdateUserResponse {
@@ -144,7 +135,6 @@ message UpdateUserResponse {
 
 // Delete user method
 message DeleteUserRequest {
-  string app_id = 1;
 }
 
 message DeleteUserResponse {
