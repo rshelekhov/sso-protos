@@ -3,22 +3,64 @@ syntax = "proto3";
 package auth;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/descriptor.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
 
+extend google.protobuf.MethodOptions {
+  bool require_auth = 50001;
+}
+
 service Auth {
-  rpc RegisterApp (RegisterAppRequest) returns (RegisterAppResponse);
-  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
-  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
-  rpc Login (LoginRequest) returns (LoginResponse);
-  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
-  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
-  rpc Refresh (RefreshRequest) returns (RefreshResponse);
-  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
-  rpc GetUser (GetUserRequest) returns (GetUserResponse);
-  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  // Public methods
+  rpc RegisterApp (RegisterAppRequest) returns (RegisterAppResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc Login (LoginRequest) returns (LoginResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc Refresh (RefreshRequest) returns (RefreshResponse) {
+    option (require_auth) = false;
+  }
+
+  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse) {
+    option (require_auth) = false;
+  }
+
+  // Protected methods
+  rpc Logout (LogoutRequest) returns (LogoutResponse) {
+    option (require_auth) = true;
+  }
+
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {
+    option (require_auth) = true;
+  }
+
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
+    option (require_auth) = true;
+  }
+
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
+    option (require_auth) = true;
+  }
 }
 
 // Register app method
