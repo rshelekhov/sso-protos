@@ -16,6 +16,7 @@ service Auth {
   rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
   rpc Refresh (RefreshRequest) returns (RefreshResponse);
   rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) ;
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
