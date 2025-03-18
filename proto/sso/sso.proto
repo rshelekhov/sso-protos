@@ -7,34 +7,51 @@ import "google/protobuf/descriptor.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
 
+// Auth service definition
 service Auth {
-  rpc RegisterApp (RegisterAppRequest) returns (RegisterAppResponse);
-  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
-  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
-  rpc Login (LoginRequest) returns (LoginResponse);
-  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
-  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
-  rpc Refresh (RefreshRequest) returns (RefreshResponse);
-  rpc GetJWKS (GetJWKSRequest) returns (GetJWKSResponse);
-  rpc GetUser (GetUserRequest) returns (GetUserResponse);
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
-  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) ;
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  // Application management
+  rpc RegisterApp(RegisterAppRequest) returns (RegisterAppResponse);
+
+  // User authentication
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+  rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+
+  // User management
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse);
+
+  // Role management
+  rpc ChangeUserRole(ChangeUserRoleRequest) returns (ChangeUserRoleResponse);
+  rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
 }
 
-// Register app method
+//==============================================================================
+// Application Management
+//==============================================================================
+
 message RegisterAppRequest {
   string app_name = 1;
 }
 
-message RegisterAppResponse {
-}
+message RegisterAppResponse {}
 
-// Register method
+//==============================================================================
+// User Authentication
+//==============================================================================
+
 message RegisterUserRequest {
-  string email = 1;
-  string password = 2;
-  string verification_url =3;
+  string         email            = 1;
+  string         password         = 2;
+  string         verification_url = 3;
   UserDeviceData user_device_data = 4;
 }
 
@@ -42,18 +59,15 @@ message RegisterUserResponse {
   TokenData token_data = 1;
 }
 
-// Verify email method
 message VerifyEmailRequest {
   string token = 1;
 }
 
-message VerifyEmailResponse {
-}
+message VerifyEmailResponse {}
 
-// Login method
 message LoginRequest {
-  string email = 1;
-  string password = 2;
+  string         email            = 1;
+  string         password         = 2;
   UserDeviceData user_device_data = 3;
 }
 
@@ -61,35 +75,28 @@ message LoginResponse {
   TokenData token_data = 1;
 }
 
-// Reset password method
 message ResetPasswordRequest {
-  string email = 1;
+  string email       = 1;
   string confirm_url = 2;
 }
 
-message ResetPasswordResponse {
-}
+message ResetPasswordResponse {}
 
-// Change password method
 message ChangePasswordRequest {
-  string token = 1;
+  string token            = 1;
   string updated_password = 2;
 }
 
-message ChangePasswordResponse {
-}
+message ChangePasswordResponse {}
 
-// Logout user method
 message LogoutRequest {
   UserDeviceData user_device_data = 1;
 }
 
-message LogoutResponse {
-}
+message LogoutResponse {}
 
-// Refresh tokens method
 message RefreshRequest {
-  string refresh_token = 1;
+  string         refresh_token    = 1;
   UserDeviceData user_device_data = 2;
 }
 
@@ -97,12 +104,10 @@ message RefreshResponse {
   TokenData token_data = 1;
 }
 
-// Get JWK method
-message GetJWKSRequest {
-}
+message GetJWKSRequest {}
 
 message GetJWKSResponse {
-   repeated JWK jwks = 1;
+  repeated JWK jwks = 1;
 }
 
 message JWK {
@@ -110,51 +115,96 @@ message JWK {
   string kty = 2;
   string use = 3;
   string kid = 4;
-  string n = 5;
-  string e = 6;
+  string n   = 5;
+  string e   = 6;
 }
 
-// Get user method
-message GetUserRequest {
-}
+//==============================================================================
+// User Management
+//==============================================================================
+
+message GetUserRequest {}
 
 message GetUserResponse {
-  string email = 1;
-  bool verified = 2;
-  google.protobuf.Timestamp updatedAt = 3;
+  User user = 1;
 }
 
-// Update user method
+message GetUserByIDRequest {
+  string user_id = 1;
+}
+
+message GetUserByIDResponse {
+  User user = 1;
+}
+
 message UpdateUserRequest {
-  string email = 1;
+  string email            = 1;
   string current_password = 2;
   string updated_password = 3;
 }
 
 message UpdateUserResponse {
-  string email = 1;
+  string                    email     = 1;
   google.protobuf.Timestamp updatedAt = 2;
 }
 
-// Delete user method
-message DeleteUserRequest {
-}
+message DeleteUserRequest {}
 
 message DeleteUserResponse {
+  bool success = 1;
 }
 
-// Custom types
+message DeleteUserByIDRequest {
+  string user_id = 1;
+}
+
+message DeleteUserByIDResponse {
+  bool success = 1;
+}
+
+//==============================================================================
+// Role Management
+//==============================================================================
+
+message ChangeUserRoleRequest {
+  string user_id = 1;
+  string role    = 2;  // "admin" or "user"
+}
+
+message ChangeUserRoleResponse {
+  bool success = 1;
+}
+
+message GetUserRoleRequest {
+  string user_id = 1; 
+}
+
+message GetUserRoleResponse {
+  string role = 1;
+}
+
+//==============================================================================
+// Custom Types
+//==============================================================================
+
+message User {
+  string                     email     = 1;
+  bool                       verified  = 2;
+  string                     role      = 3;
+  google.protobuf.Timestamp  updatedAt = 4;
+}
+
 message UserDeviceData {
   string user_agent = 1;
-  string ip = 2;
+  string ip         = 2;
 }
 
 message TokenData {
-  string access_token = 1;
-  string refresh_token = 2;
-  string domain = 3;
-  string path = 4;
-  google.protobuf.Timestamp expires_at = 5;
-  bool http_only = 6;
-  map<string, string> additional_fields = 7;
+  string                     access_token      = 1;
+  string                     refresh_token     = 2;
+  string                     domain            = 3;
+  string                     path              = 4;
+  google.protobuf.Timestamp  expires_at        = 5;
+  bool                       http_only         = 6;
+  map<string, string>        additional_fields = 7;
 }
