@@ -117,9 +117,8 @@ message RefreshTokensForAppResponse {
 }
 
 message CheckSessionRequest {
-  string app_id = 1;
-  string refresh_token = 2;
-  UserDeviceData user_device_data = 3;
+  string refresh_token = 1;
+  UserDeviceData user_device_data = 2;
 }
 
 message CheckSessionResponse {
