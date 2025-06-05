@@ -1,14 +1,14 @@
 syntax = "proto3";
 
-package auth;
+package sso;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/descriptor.proto";
 
 option go_package = "rshelekhov.sso.v1;ssov1";
 
-// Auth service definition
-service Auth {
+// SSO service definition
+service SSOService {
   // Application management
   rpc RegisterApp(RegisterAppRequest) returns (RegisterAppResponse);
 
@@ -18,7 +18,9 @@ service Auth {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
-  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+  rpc RefreshTokens(RefreshTokensRequest) returns (RefreshTokensResponse);
+  rpc RefreshTokensForApp(RefreshTokensForAppRequest) returns (RefreshTokensForAppResponse);
+  rpc CheckSession(CheckSessionRequest) returns (CheckSessionResponse);
   rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse);
   rpc Logout(LogoutRequest) returns (LogoutResponse);
 
@@ -95,13 +97,37 @@ message LogoutRequest {
 
 message LogoutResponse {}
 
-message RefreshRequest {
+message RefreshTokensRequest {
   string         refresh_token    = 1;
   UserDeviceData user_device_data = 2;
 }
 
-message RefreshResponse {
+message RefreshTokensResponse {
   TokenData token_data = 1;
+}
+
+message RefreshTokensForAppRequest {
+  string target_app_id = 1;
+  string refresh_token = 2;
+  UserDeviceData user_device_data = 3;
+}
+
+message RefreshTokensForAppResponse {
+  TokenData token_data = 1;
+}
+
+message CheckSessionRequest {
+  string app_id = 1;
+  string refresh_token = 2;
+  UserDeviceData user_device_data = 3;
+}
+
+message CheckSessionResponse {
+  string user_id = 1;
+  string app_id = 2;
+  string device_id = 3;
+  string refresh_token = 4;
+  google.protobuf.Timestamp expires_at = 5;
 }
 
 message GetJWKSRequest {}
@@ -145,7 +171,7 @@ message UpdateUserRequest {
 
 message UpdateUserResponse {
   string                    email     = 1;
-  google.protobuf.Timestamp updatedAt = 2;
+  google.protobuf.Timestamp updated_at = 2;
 }
 
 message DeleteUserRequest {}
@@ -192,7 +218,7 @@ message User {
   string                     email     = 2;
   bool                       verified  = 3;
   string                     role      = 4;
-  google.protobuf.Timestamp  updatedAt = 5;
+  google.protobuf.Timestamp  updated_at = 5;
 }
 
 message UserDeviceData {
