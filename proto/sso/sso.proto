@@ -55,7 +55,8 @@ message RegisterUserRequest {
   string         email            = 1;
   string         password         = 2;
   string         verification_url = 3;
-  UserDeviceData user_device_data = 4;
+  string         confirm_password_url = 4;
+  UserDeviceData user_device_data = 5;
 }
 
 message RegisterUserResponse {
