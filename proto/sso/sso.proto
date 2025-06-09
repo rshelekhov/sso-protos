@@ -18,6 +18,7 @@ service SSOService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc ConfirmCrossServicePasswordChange(ConfirmCrossServicePasswordChangeRequest) returns (ConfirmCrossServicePasswordChangeResponse);
   rpc RefreshTokens(RefreshTokensRequest) returns (RefreshTokensResponse);
   rpc RefreshTokensForApp(RefreshTokensForAppRequest) returns (RefreshTokensForAppResponse);
   rpc CheckSession(CheckSessionRequest) returns (CheckSessionResponse);
@@ -90,6 +91,12 @@ message ChangePasswordRequest {
 }
 
 message ChangePasswordResponse {}
+
+message ConfirmCrossServicePasswordChangeRequest {
+  string token = 1;
+}
+
+message ConfirmCrossServicePasswordChangeResponse {}
 
 message LogoutRequest {
   UserDeviceData user_device_data = 1;

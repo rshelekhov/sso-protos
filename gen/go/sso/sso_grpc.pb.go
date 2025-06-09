@@ -19,24 +19,25 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SSOService_RegisterApp_FullMethodName         = "/sso.SSOService/RegisterApp"
-	SSOService_RegisterUser_FullMethodName        = "/sso.SSOService/RegisterUser"
-	SSOService_VerifyEmail_FullMethodName         = "/sso.SSOService/VerifyEmail"
-	SSOService_Login_FullMethodName               = "/sso.SSOService/Login"
-	SSOService_ResetPassword_FullMethodName       = "/sso.SSOService/ResetPassword"
-	SSOService_ChangePassword_FullMethodName      = "/sso.SSOService/ChangePassword"
-	SSOService_RefreshTokens_FullMethodName       = "/sso.SSOService/RefreshTokens"
-	SSOService_RefreshTokensForApp_FullMethodName = "/sso.SSOService/RefreshTokensForApp"
-	SSOService_CheckSession_FullMethodName        = "/sso.SSOService/CheckSession"
-	SSOService_GetJWKS_FullMethodName             = "/sso.SSOService/GetJWKS"
-	SSOService_Logout_FullMethodName              = "/sso.SSOService/Logout"
-	SSOService_GetUser_FullMethodName             = "/sso.SSOService/GetUser"
-	SSOService_GetUserByID_FullMethodName         = "/sso.SSOService/GetUserByID"
-	SSOService_UpdateUser_FullMethodName          = "/sso.SSOService/UpdateUser"
-	SSOService_DeleteUser_FullMethodName          = "/sso.SSOService/DeleteUser"
-	SSOService_DeleteUserByID_FullMethodName      = "/sso.SSOService/DeleteUserByID"
-	SSOService_ChangeUserRole_FullMethodName      = "/sso.SSOService/ChangeUserRole"
-	SSOService_GetUserRole_FullMethodName         = "/sso.SSOService/GetUserRole"
+	SSOService_RegisterApp_FullMethodName                       = "/sso.SSOService/RegisterApp"
+	SSOService_RegisterUser_FullMethodName                      = "/sso.SSOService/RegisterUser"
+	SSOService_VerifyEmail_FullMethodName                       = "/sso.SSOService/VerifyEmail"
+	SSOService_Login_FullMethodName                             = "/sso.SSOService/Login"
+	SSOService_ResetPassword_FullMethodName                     = "/sso.SSOService/ResetPassword"
+	SSOService_ChangePassword_FullMethodName                    = "/sso.SSOService/ChangePassword"
+	SSOService_ConfirmCrossServicePasswordChange_FullMethodName = "/sso.SSOService/ConfirmCrossServicePasswordChange"
+	SSOService_RefreshTokens_FullMethodName                     = "/sso.SSOService/RefreshTokens"
+	SSOService_RefreshTokensForApp_FullMethodName               = "/sso.SSOService/RefreshTokensForApp"
+	SSOService_CheckSession_FullMethodName                      = "/sso.SSOService/CheckSession"
+	SSOService_GetJWKS_FullMethodName                           = "/sso.SSOService/GetJWKS"
+	SSOService_Logout_FullMethodName                            = "/sso.SSOService/Logout"
+	SSOService_GetUser_FullMethodName                           = "/sso.SSOService/GetUser"
+	SSOService_GetUserByID_FullMethodName                       = "/sso.SSOService/GetUserByID"
+	SSOService_UpdateUser_FullMethodName                        = "/sso.SSOService/UpdateUser"
+	SSOService_DeleteUser_FullMethodName                        = "/sso.SSOService/DeleteUser"
+	SSOService_DeleteUserByID_FullMethodName                    = "/sso.SSOService/DeleteUserByID"
+	SSOService_ChangeUserRole_FullMethodName                    = "/sso.SSOService/ChangeUserRole"
+	SSOService_GetUserRole_FullMethodName                       = "/sso.SSOService/GetUserRole"
 )
 
 // SSOServiceClient is the client API for SSOService service.
@@ -53,6 +54,7 @@ type SSOServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
+	ConfirmCrossServicePasswordChange(ctx context.Context, in *ConfirmCrossServicePasswordChangeRequest, opts ...grpc.CallOption) (*ConfirmCrossServicePasswordChangeResponse, error)
 	RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*RefreshTokensResponse, error)
 	RefreshTokensForApp(ctx context.Context, in *RefreshTokensForAppRequest, opts ...grpc.CallOption) (*RefreshTokensForAppResponse, error)
 	CheckSession(ctx context.Context, in *CheckSessionRequest, opts ...grpc.CallOption) (*CheckSessionResponse, error)
@@ -131,6 +133,16 @@ func (c *sSOServiceClient) ChangePassword(ctx context.Context, in *ChangePasswor
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ChangePasswordResponse)
 	err := c.cc.Invoke(ctx, SSOService_ChangePassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sSOServiceClient) ConfirmCrossServicePasswordChange(ctx context.Context, in *ConfirmCrossServicePasswordChangeRequest, opts ...grpc.CallOption) (*ConfirmCrossServicePasswordChangeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConfirmCrossServicePasswordChangeResponse)
+	err := c.cc.Invoke(ctx, SSOService_ConfirmCrossServicePasswordChange_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -271,6 +283,7 @@ type SSOServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
+	ConfirmCrossServicePasswordChange(context.Context, *ConfirmCrossServicePasswordChangeRequest) (*ConfirmCrossServicePasswordChangeResponse, error)
 	RefreshTokens(context.Context, *RefreshTokensRequest) (*RefreshTokensResponse, error)
 	RefreshTokensForApp(context.Context, *RefreshTokensForAppRequest) (*RefreshTokensForAppResponse, error)
 	CheckSession(context.Context, *CheckSessionRequest) (*CheckSessionResponse, error)
@@ -312,6 +325,9 @@ func (UnimplementedSSOServiceServer) ResetPassword(context.Context, *ResetPasswo
 }
 func (UnimplementedSSOServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
+}
+func (UnimplementedSSOServiceServer) ConfirmCrossServicePasswordChange(context.Context, *ConfirmCrossServicePasswordChangeRequest) (*ConfirmCrossServicePasswordChangeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfirmCrossServicePasswordChange not implemented")
 }
 func (UnimplementedSSOServiceServer) RefreshTokens(context.Context, *RefreshTokensRequest) (*RefreshTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokens not implemented")
@@ -474,6 +490,24 @@ func _SSOService_ChangePassword_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SSOServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SSOService_ConfirmCrossServicePasswordChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmCrossServicePasswordChangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SSOServiceServer).ConfirmCrossServicePasswordChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SSOService_ConfirmCrossServicePasswordChange_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SSOServiceServer).ConfirmCrossServicePasswordChange(ctx, req.(*ConfirmCrossServicePasswordChangeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -724,6 +758,10 @@ var SSOService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangePassword",
 			Handler:    _SSOService_ChangePassword_Handler,
+		},
+		{
+			MethodName: "ConfirmCrossServicePasswordChange",
+			Handler:    _SSOService_ConfirmCrossServicePasswordChange_Handler,
 		},
 		{
 			MethodName: "RefreshTokens",
