@@ -1,60 +1,106 @@
 # SSO Protos
-This repository contains Protocol Buffers definitions and generated Go code for the Single Sign-On (SSO) service. The service provides authentication and user management functionality via gRPC and REST API endpoints.
+
+This repository contains Protocol Buffers definitions and generated Go code for the Single Sign-On (SSO) service. The service provide authentication, user management, and application management functionality via gRPC.
 
 ## Related Projects
+
 This repository is used as a dependency for the main project — [SSO Service](https://github.com/rshelekhov/sso) - gRPC service implementation
 
-## Overview
-The SSO service supports the following features:
+## Architecture
 
-- Application registration and management
-- User registration and email verification
-- Authentication (login/logout)
-- Password management (reset/change)
-- JWT token management with JWKS endpoint
-- User profile management (get/update/delete)
-- Token refresh functionality
-- Multi-device support with device tracking
+The SSO system is split into **3 services** for better separation of concerns:
+
+- **AuthService** - Authentication and token management
+- **UserService** - User profile and role management
+- **AppService** - Application registration and management
 
 ## Proto Files Structure
-The main service definition includes:
 
-- Auth service with all necessary RPC methods
-- Request/Response messages for each method
-- Common types (UserDeviceData, TokenData, JWK)
+```
+proto/api/
+├── auth/v1/auth.proto    # Authentication service
+├── user/v1/user.proto    # User management service
+└── app/v1/app.proto      # Application management service
+```
 
 ## Generated Code Usage
-The generated Go code can be imported into your projects:
 
-``` go
-import "github.com/rshelekhov/sso-protos/gen/go/sso"
+Import the generated Go code for each service:
+
+```go
+// Authentication service
+import authv1 "github.com/rshelekhov/sso-protos/gen/go/api/auth/v1"
+
+// User management service
+import userv1 "github.com/rshelekhov/sso-protos/gen/go/api/user/v1"
+
+// Application management service
+import appv1 "github.com/rshelekhov/sso-protos/gen/go/api/app/v1"
 ```
 
 ## Service Methods
 
-### Application Management
-
-- `RegisterApp` - Register new application in the SSO system
-
-### User Management
+### AuthService (Authentication & Token Management)
 
 - `RegisterUser` - Register new user with email verification
 - `VerifyEmail` - Verify user's email address
-- `GetUser` - Retrieve user information
-- `UpdateUser` - Update user details
-- `DeleteUser` - Delete user account
-
-### Authentication
-
 - `Login` - Authenticate user and receive tokens
 - `Logout` - Terminate user session
-- `Refresh` - Refresh authentication tokens
+- `RefreshTokens` - Refresh authentication tokens
+- `RefreshTokensForApp` - Refresh tokens for specific application
+- `CheckSession` - Verify session validity
 - `GetJWKS` - Retrieve JSON Web Key Set for token verification
-
-### Password Management
-
 - `ResetPassword` - Initiate password reset process
 - `ChangePassword` - Change user password
+- `ConfirmCrossServicePasswordChange` - Confirm password change across services
+
+### UserService (User & Role Management)
+
+- `GetUser` - Retrieve current user information
+- `GetUserByID` - Retrieve user information by ID
+- `UpdateUser` - Update user profile details
+- `DeleteUser` - Delete current user account
+- `DeleteUserByID` - Delete user account by ID
+- `ChangeUserRole` - Change user role (admin/user)
+- `GetUserRole` - Get user role information
+
+### AppService (Application Management)
+
+- `RegisterApp` - Register new application in the SSO system
+
+## Features
+
+- **Multi-device support** with device tracking via UserDeviceData
+- **JWT token management** with access/refresh token pairs
+- **Email verification** workflow for new users
+- **Password reset/change** functionality
+- **Role-based access control** (admin/user roles)
+- **Cross-service token refresh** for multi-app environments
+- **JWKS endpoint** for token validation
+
+## Code Generation
+
+This repository uses [buf](https://buf.build) for Protocol Buffers code generation.
+
+To generate code:
+
+Install buf:
+
+```bash
+brew install bufbuild/buf/buf
+```
+
+Install dependencies:
+
+```bash
+make .bin-deps
+```
+
+Generate code:
+
+```bash
+buf generate .
+```
 
 ## License
 
