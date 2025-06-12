@@ -1,0 +1,3 @@
+# Hide generated files from diffs
+*.pb.go
+/gen/*
