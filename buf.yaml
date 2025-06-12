@@ -1,0 +1,31 @@
+# For details on buf.yaml configuration, visit https://buf.build/docs/configuration/v2/buf-yaml
+version: v2
+modules:
+  - path: proto
+    name: buf.build/rshelekhov/msa-messenger-protos
+deps:
+  - buf.build/bufbuild/protovalidate
+lint:
+  use:
+    - STANDARD
+    - COMMENTS
+    - FILE_LOWER_SNAKE_CASE
+  rpc_allow_same_request_response: false
+  rpc_allow_google_protobuf_empty_requests: false
+  rpc_allow_google_protobuf_empty_responses: false
+  service_suffix: Service
+breaking:
+  use:
+    - FILE
+    - PACKAGE
+    - WIRE_JSON
+    - ENUM_NO_DELETE
+    - ENUM_SAME_JSON_FORMAT
+    - ENUM_SAME_TYPE
+    - ENUM_VALUE_NO_DELETE
+    - ENUM_VALUE_NO_DELETE_UNLESS_NAME_RESERVED
+    - ENUM_VALUE_NO_DELETE_UNLESS_NUMBER_RESERVED
+    - ENUM_VALUE_SAME_NAME
+    - EXTENSION_MESSAGE_NO_DELETE
+    - EXTENSION_NO_DELETE
+    - FIELD_NO_DELETE
