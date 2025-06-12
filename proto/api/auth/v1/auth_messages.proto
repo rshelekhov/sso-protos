@@ -1,0 +1,236 @@
+syntax = "proto3";
+
+package api.auth.v1;
+
+import "google/protobuf/timestamp.proto";
+import "api/auth/v1/auth_types.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "rshelekhov.sso.api.auth.v1;authv1";
+
+// Request to register new user account
+message RegisterUserRequest {
+  // User's email address, must be valid format and unique
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).string.min_len = 5,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Plain text password, will be hashed server-side
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+
+  // Base URL where verification link will redirect after email click
+  string verification_url = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // URL for password confirmation flows, used for multi-service password change
+  string confirm_password_url = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // Device fingerprint for security tracking
+  UserDeviceData user_device_data = 5 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response after user registration attempt
+message RegisterUserResponse {
+  // Access and refresh tokens with expiration info
+  TokenData token_data = 1;
+}
+
+// Request to verify email address
+message VerifyEmailRequest {
+  // Email verification token received via email link
+  string token = 1 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Empty response confirming successful email verification
+message VerifyEmailResponse {}
+
+// Request to authenticate user
+message LoginRequest {
+  // User's registered email address
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).string.min_len = 5,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // User's password in plain text
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+
+  // Device info for session tracking and security
+  UserDeviceData user_device_data = 3 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response containing authentication tokens
+message LoginResponse {
+  // Access and refresh tokens with expiration info
+  TokenData token_data = 1;
+}
+
+// Request to initiate password reset
+message ResetPasswordRequest {
+  // Email address to send reset link to
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).string.min_len = 5,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Base URL for password reset confirmation page
+  string confirm_url = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true
+  ];
+}
+
+// Empty response
+message ResetPasswordResponse {}
+
+// Request to change password using reset token
+message ChangePasswordRequest {
+  // Password reset token from email
+  string token = 1 [
+    (buf.validate.field).required = true
+  ];
+
+  // New password in plain text
+  string updated_password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+}
+
+// Empty response confirming password change
+message ChangePasswordResponse {}
+
+// Request to confirm password change across services
+message ConfirmCrossServicePasswordChangeRequest {
+  // Cross-service password change confirmation token
+  string token = 1 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Empty response confirming cross-service password change
+message ConfirmCrossServicePasswordChangeResponse {}
+
+// Request to terminate user session
+message LogoutRequest {
+  // Device info to identify which session to terminate
+  UserDeviceData user_device_data = 1 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Empty response confirming successful logout
+message LogoutResponse {}
+
+// Request to refresh authentication tokens
+message RefreshTokensRequest {
+  // Valid refresh token
+  string refresh_token = 1 [
+    (buf.validate.field).required = true
+  ];
+
+  // Device info for security validation
+  UserDeviceData user_device_data = 2 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response with new refreshed tokens
+message RefreshTokensResponse {
+  // Access and refresh tokens with expiration info
+  TokenData token_data = 1;
+}
+
+// Request to refresh tokens for specific application
+message RefreshTokensForAppRequest {
+  // Application ID to generate tokens for
+  string target_app_id = 1 [
+    (buf.validate.field).required = true
+  ];
+
+  // Current valid refresh token
+  string refresh_token = 2 [
+    (buf.validate.field).required = true
+  ];
+
+  // Device context for security
+  UserDeviceData user_device_data = 3 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response with application-specific tokens
+message RefreshTokensForAppResponse {
+  // Access and refresh tokens with expiration info
+  TokenData token_data = 1;
+}
+
+// Request to validate current session
+message CheckSessionRequest {
+  // Refresh token to validate
+  string refresh_token = 1 [
+    (buf.validate.field).required = true
+  ];
+
+  // Device context for validation
+  UserDeviceData user_device_data = 2 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response with current session details
+message CheckSessionResponse {
+  // Authenticated user's unique identifier
+  string user_id = 1;
+
+  // Application context for this session
+  string app_id = 2;
+
+  // Device identifier for this session
+  string device_id = 3;
+
+  // Current valid refresh token
+  string refresh_token = 4;
+
+  // When this session expires
+  google.protobuf.Timestamp expires_at = 5;
+}
+
+// Request for JWT verification keys (public endpoint)
+message GetJWKSRequest {}
+
+// Response containing JWT verification keys
+message GetJWKSResponse {
+  // Array of JSON Web Keys for token verification
+  repeated JWK jwks = 1;
+}

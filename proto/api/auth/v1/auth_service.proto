@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package api.auth.v1;
+
+import "api/auth/v1/auth_messages.proto";
+
+option go_package = "rshelekhov.sso.api.auth.v1;authv1";
+
+// Authentication service handles user registration, login, token management and password operations.
+// This service is responsible for all authentication flows including multi-device support.
+service AuthService {
+  // Initiates user registration with email verification workflow.
+  // Creates unverified user account and sends verification email.
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+  
+  // Verifies user email using token from registration email.
+  // Activates user account and allows login after successful verification.
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  
+  // Authenticates user credentials and creates new session.
+  // Returns access/refresh token pair for authenticated requests.
+  rpc Login(LoginRequest) returns (LoginResponse);
+  
+  // Initiates password reset workflow by sending reset email.
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+  
+  // Changes user password using reset token from email.
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  
+  // Confirms password change across multiple services/applications.
+  // Used when password is changed in one service but needs confirmation in others.
+  rpc ConfirmCrossServicePasswordChange(ConfirmCrossServicePasswordChangeRequest) returns (ConfirmCrossServicePasswordChangeResponse);
+  
+  // Refreshes expired access token using valid refresh token.
+  // Maintains user session without requiring re-authentication.
+  rpc RefreshTokens(RefreshTokensRequest) returns (RefreshTokensResponse);
+  
+  // Refreshes tokens for specific target application.
+  rpc RefreshTokensForApp(RefreshTokensForAppRequest) returns (RefreshTokensForAppResponse);
+  
+  // Validates current session and returns session details.
+  // Used for session health checks and user context retrieval.
+  rpc CheckSession(CheckSessionRequest) returns (CheckSessionResponse);
+  
+  // Returns JSON Web Key Set for JWT token signature verification.
+  // Public endpoint used by services to validate JWT tokens independently.
+  rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse);
+  
+  // Terminates user session and invalidates tokens.
+  // Clears session data for specific device while preserving other device sessions.
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+}

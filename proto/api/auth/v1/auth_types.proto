@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package api.auth.v1;
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "rshelekhov.sso.api.auth.v1;authv1";
+
+// Device fingerprint for security and session management
+message UserDeviceData {
+  // Browser/client user agent string
+  string user_agent = 1 [
+    (buf.validate.field).required = true
+  ];
+
+  // Client IP address for geo-location and security
+  string ip = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.ip = true
+  ];
+}
+
+// Token information for authentication
+message TokenData {
+  // JWT access token for API authentication
+  string access_token = 1;
+
+  // Refresh token for obtaining new access tokens
+  string refresh_token = 2;
+
+  // Cookie domain for web clients
+  string domain = 3;
+
+  // Cookie path for web clients
+  string path = 4;
+
+  // When access token expires
+  google.protobuf.Timestamp expires_at = 5;
+
+  // Whether cookies should be HTTP-only
+  bool http_only = 6;
+
+  // Extra fields for application-specific data
+  map<string, string> additional_fields = 7;
+}
+
+
+// JSON Web Key for JWT signature verification
+message JWK {
+  // Cryptographic algorithm (e.g., "RS256")
+  string alg = 1;
+
+  // Key type (e.g., "RSA")
+  string kty = 2;
+
+  // Key usage (e.g., "sig" for signature)
+  string use = 3;
+
+  // Key identifier for key rotation
+  string kid = 4;
+
+  // RSA modulus (base64url encoded)
+  string n = 5;
+
+  // RSA exponent (base64url encoded)
+  string e = 6;
+}
