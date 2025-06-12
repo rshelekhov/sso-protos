@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "api/user/v1/user_types.proto";
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "rshelekhov.sso.api.user.v1;userv1";
+
+//==============================================================================
+// User Management
+//==============================================================================
+
+// Request to get current user profile (uses token context)
+message GetUserRequest {}
+
+// Response containing user profile information
+message GetUserResponse {
+  // Complete user profile with all accessible fields
+  User user = 1;
+}
+
+// Request to get user profile by specific ID
+message GetUserByIDRequest {
+  // Target user's unique identifier
+  string user_id = 1 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response containing requested user's profile
+message GetUserByIDResponse {
+  // User profile (may have restricted fields based on permissions)
+  User user = 1;
+}
+
+// Request to update current user's profile
+message UpdateUserRequest {
+  // New email address (must be unique if provided)
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).string.min_len = 5,
+    (buf.validate.field).string.max_len = 255
+  ];
+
+  // Current password for identity verification
+  string current_password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+
+  // New password (optional, requires current_password)
+  string updated_password = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 255,
+    (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+}
+
+// Response confirming profile update with new information
+message UpdateUserResponse {
+  // Updated email address
+  string email = 1;
+
+  // Timestamp of last profile modification
+  google.protobuf.Timestamp updated_at = 2;
+}
+
+// Request to delete current user account
+message DeleteUserRequest {}
+
+// Response confirming account deletion
+message DeleteUserResponse {
+  // True if account was successfully deleted
+  bool success = 1;
+}
+
+// Request to delete user account by ID (admin operation)
+message DeleteUserByIDRequest {
+  // Target user's unique identifier to delete
+  string user_id = 1 [
+    (buf.validate.field).required = true
+  ];
+}
+
+// Response confirming user deletion by admin
+message DeleteUserByIDResponse {
+  // True if target user was successfully deleted
+  bool success = 1;
+}
+
+//==============================================================================
+// Role Management
+//==============================================================================
+
+// Request to change user's system role
+message ChangeUserRoleRequest {
+  // Target user's unique identifier
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+
+  // New role: "admin" for administrative privileges, "user" for standard access
+  Role role = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+}
+
+// Response confirming role change operation
+message ChangeUserRoleResponse {
+  // True if role was successfully changed
+  bool success = 1;
+}
+
+// Request to retrieve user's current role
+message GetUserRoleRequest {
+  // Target user's unique identifier
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+// Response containing user's role information
+message GetUserRoleResponse {
+  // Current user role: "admin" or "user"
+  string role = 1;
+}

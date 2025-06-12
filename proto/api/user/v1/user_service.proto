@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "api/user/v1/user_messages.proto";
+
+option go_package = "rshelekhov.sso.api.user.v1;userv1";
+
+// User management service handles user profile operations and role management.
+// This service requires authenticated requests with valid access tokens.
+service UserService {
+  // Retrieves current authenticated user's profile information.
+  // Uses token context to identify user, no additional parameters needed.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  
+  // Retrieves any user's profile by their unique identifier.
+  // Typically requires admin privileges or specific permissions.
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+  
+  // Updates current user's profile information.
+  // Can modify email and password with proper current password validation.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  
+  // Deletes current authenticated user's account permanently.
+  // This action is irreversible and removes all user data.
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  
+  // Deletes any user account by ID (admin operation).
+  // Typically restricted to admin users only.
+  rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse);
+  
+  // Changes user's role in the system (admin operation).
+  // Can promote users to admin or demote to regular user.
+  rpc ChangeUserRole(ChangeUserRoleRequest) returns (ChangeUserRoleResponse);
+  
+  // Retrieves user's current role information.
+  // Used for authorization and UI permission checks.
+  rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
+}
