@@ -1,8 +1,5 @@
-# IDE
-/.idea/
-
-# ENV
-.env
-
-# Other
+vendor.protobuf
+bin
 .DS_Store
+.vscode
+.idea
