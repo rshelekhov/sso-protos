@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.app.v1;
+
+import "api/app/v1/app_messages.proto";
+
+option go_package = "rshelekhov.sso.api.app.v1;appv1";
+
+// Application management service handles registration and configuration of client applications.
+// This service manages which applications can integrate with the SSO system.
+service AppService {
+  // Registers a new client application in the SSO system.
+  // Creates application credentials and configuration for SSO integration.
+  // Typically used during application onboarding process.
+  rpc RegisterApp(RegisterAppRequest) returns (RegisterAppResponse);
+}
