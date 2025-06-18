@@ -54,15 +54,13 @@ import appv1 "github.com/rshelekhov/sso-protos/gen/go/api/app/v1"
 - `ChangePassword` - Change user password
 - `ConfirmCrossServicePasswordChange` - Confirm password change across services
 
-### UserService (User & Role Management)
+### UserService (User Management)
 
 - `GetUser` - Retrieve current user information
 - `GetUserByID` - Retrieve user information by ID
 - `UpdateUser` - Update user profile details
 - `DeleteUser` - Delete current user account
 - `DeleteUserByID` - Delete user account by ID
-- `ChangeUserRole` - Change user role (admin/user)
-- `GetUserRole` - Get user role information
 
 ### AppService (Application Management)
 
@@ -74,7 +72,6 @@ import appv1 "github.com/rshelekhov/sso-protos/gen/go/api/app/v1"
 - **JWT token management** with access/refresh token pairs
 - **Email verification** workflow for new users
 - **Password reset/change** functionality
-- **Role-based access control** (admin/user roles)
 - **Cross-service token refresh** for multi-app environments
 - **JWKS endpoint** for token validation
 

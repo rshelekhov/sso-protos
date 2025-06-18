@@ -28,12 +28,4 @@ service UserService {
   // Deletes any user account by ID (admin operation).
   // Typically restricted to admin users only.
   rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse);
-  
-  // Changes user's role in the system (admin operation).
-  // Can promote users to admin or demote to regular user.
-  rpc ChangeUserRole(ChangeUserRoleRequest) returns (ChangeUserRoleResponse);
-  
-  // Retrieves user's current role information.
-  // Used for authorization and UI permission checks.
-  rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
 }

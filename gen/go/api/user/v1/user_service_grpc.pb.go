@@ -24,8 +24,6 @@ const (
 	UserService_UpdateUser_FullMethodName     = "/api.user.v1.UserService/UpdateUser"
 	UserService_DeleteUser_FullMethodName     = "/api.user.v1.UserService/DeleteUser"
 	UserService_DeleteUserByID_FullMethodName = "/api.user.v1.UserService/DeleteUserByID"
-	UserService_ChangeUserRole_FullMethodName = "/api.user.v1.UserService/ChangeUserRole"
-	UserService_GetUserRole_FullMethodName    = "/api.user.v1.UserService/GetUserRole"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -50,12 +48,6 @@ type UserServiceClient interface {
 	// Deletes any user account by ID (admin operation).
 	// Typically restricted to admin users only.
 	DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error)
-	// Changes user's role in the system (admin operation).
-	// Can promote users to admin or demote to regular user.
-	ChangeUserRole(ctx context.Context, in *ChangeUserRoleRequest, opts ...grpc.CallOption) (*ChangeUserRoleResponse, error)
-	// Retrieves user's current role information.
-	// Used for authorization and UI permission checks.
-	GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error)
 }
 
 type userServiceClient struct {
@@ -116,26 +108,6 @@ func (c *userServiceClient) DeleteUserByID(ctx context.Context, in *DeleteUserBy
 	return out, nil
 }
 
-func (c *userServiceClient) ChangeUserRole(ctx context.Context, in *ChangeUserRoleRequest, opts ...grpc.CallOption) (*ChangeUserRoleResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChangeUserRoleResponse)
-	err := c.cc.Invoke(ctx, UserService_ChangeUserRole_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserRoleResponse)
-	err := c.cc.Invoke(ctx, UserService_GetUserRole_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -158,12 +130,6 @@ type UserServiceServer interface {
 	// Deletes any user account by ID (admin operation).
 	// Typically restricted to admin users only.
 	DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error)
-	// Changes user's role in the system (admin operation).
-	// Can promote users to admin or demote to regular user.
-	ChangeUserRole(context.Context, *ChangeUserRoleRequest) (*ChangeUserRoleResponse, error)
-	// Retrieves user's current role information.
-	// Used for authorization and UI permission checks.
-	GetUserRole(context.Context, *GetUserRoleRequest) (*GetUserRoleResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -188,12 +154,6 @@ func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserReq
 }
 func (UnimplementedUserServiceServer) DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserByID not implemented")
-}
-func (UnimplementedUserServiceServer) ChangeUserRole(context.Context, *ChangeUserRoleRequest) (*ChangeUserRoleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangeUserRole not implemented")
-}
-func (UnimplementedUserServiceServer) GetUserRole(context.Context, *GetUserRoleRequest) (*GetUserRoleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserRole not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -306,42 +266,6 @@ func _UserService_DeleteUserByID_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_ChangeUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangeUserRoleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).ChangeUserRole(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_ChangeUserRole_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).ChangeUserRole(ctx, req.(*ChangeUserRoleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_GetUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRoleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).GetUserRole(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_GetUserRole_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUserRole(ctx, req.(*GetUserRoleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -368,14 +292,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUserByID",
 			Handler:    _UserService_DeleteUserByID_Handler,
-		},
-		{
-			MethodName: "ChangeUserRole",
-			Handler:    _UserService_ChangeUserRole_Handler,
-		},
-		{
-			MethodName: "GetUserRole",
-			Handler:    _UserService_GetUserRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

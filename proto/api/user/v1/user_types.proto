@@ -17,21 +17,6 @@ message User {
   // Email verification status
   bool verified = 3;
 
-  // User's system role ("admin" or "user")
-  string role = 4;
-
   // Last profile modification timestamp
-  google.protobuf.Timestamp updated_at = 5; 
+  google.protobuf.Timestamp updated_at = 4; 
 } 
-
-// User's system role
-enum Role {
-  // Unspecified role
-  ROLE_UNSPECIFIED = 0;
-
-  // Administrative role with full system access
-  ROLE_ADMIN = 1;
-
-  // Standard user role with limited access
-  ROLE_USER = 2;
-}
