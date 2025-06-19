@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package api.auth.v1;
 
-import "google/protobuf/timestamp.proto";
 import "api/auth/v1/auth_types.proto";
 import "buf/validate/validate.proto";
 
@@ -130,17 +129,6 @@ message ChangePasswordRequest {
 // Empty response confirming password change
 message ChangePasswordResponse {}
 
-// Request to confirm password change across services
-message ConfirmCrossServicePasswordChangeRequest {
-  // Cross-service password change confirmation token
-  string token = 1 [
-    (buf.validate.field).required = true
-  ];
-}
-
-// Empty response confirming cross-service password change
-message ConfirmCrossServicePasswordChangeResponse {}
-
 // Request to terminate user session
 message LogoutRequest {
   // Device info to identify which session to terminate
@@ -169,61 +157,6 @@ message RefreshTokensRequest {
 message RefreshTokensResponse {
   // Access and refresh tokens with expiration info
   TokenData token_data = 1;
-}
-
-// Request to refresh tokens for specific application
-message RefreshTokensForAppRequest {
-  // Application ID to generate tokens for
-  string target_app_id = 1 [
-    (buf.validate.field).required = true
-  ];
-
-  // Current valid refresh token
-  string refresh_token = 2 [
-    (buf.validate.field).required = true
-  ];
-
-  // Device context for security
-  UserDeviceData user_device_data = 3 [
-    (buf.validate.field).required = true
-  ];
-}
-
-// Response with application-specific tokens
-message RefreshTokensForAppResponse {
-  // Access and refresh tokens with expiration info
-  TokenData token_data = 1;
-}
-
-// Request to validate current session
-message CheckSessionRequest {
-  // Refresh token to validate
-  string refresh_token = 1 [
-    (buf.validate.field).required = true
-  ];
-
-  // Device context for validation
-  UserDeviceData user_device_data = 2 [
-    (buf.validate.field).required = true
-  ];
-}
-
-// Response with current session details
-message CheckSessionResponse {
-  // Authenticated user's unique identifier
-  string user_id = 1;
-
-  // Application context for this session
-  string app_id = 2;
-
-  // Device identifier for this session
-  string device_id = 3;
-
-  // Current valid refresh token
-  string refresh_token = 4;
-
-  // When this session expires
-  google.protobuf.Timestamp expires_at = 5;
 }
 
 // Request for JWT verification keys (public endpoint)

@@ -19,17 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_RegisterUser_FullMethodName                      = "/api.auth.v1.AuthService/RegisterUser"
-	AuthService_VerifyEmail_FullMethodName                       = "/api.auth.v1.AuthService/VerifyEmail"
-	AuthService_Login_FullMethodName                             = "/api.auth.v1.AuthService/Login"
-	AuthService_ResetPassword_FullMethodName                     = "/api.auth.v1.AuthService/ResetPassword"
-	AuthService_ChangePassword_FullMethodName                    = "/api.auth.v1.AuthService/ChangePassword"
-	AuthService_ConfirmCrossServicePasswordChange_FullMethodName = "/api.auth.v1.AuthService/ConfirmCrossServicePasswordChange"
-	AuthService_RefreshTokens_FullMethodName                     = "/api.auth.v1.AuthService/RefreshTokens"
-	AuthService_RefreshTokensForApp_FullMethodName               = "/api.auth.v1.AuthService/RefreshTokensForApp"
-	AuthService_CheckSession_FullMethodName                      = "/api.auth.v1.AuthService/CheckSession"
-	AuthService_GetJWKS_FullMethodName                           = "/api.auth.v1.AuthService/GetJWKS"
-	AuthService_Logout_FullMethodName                            = "/api.auth.v1.AuthService/Logout"
+	AuthService_RegisterUser_FullMethodName   = "/api.auth.v1.AuthService/RegisterUser"
+	AuthService_VerifyEmail_FullMethodName    = "/api.auth.v1.AuthService/VerifyEmail"
+	AuthService_Login_FullMethodName          = "/api.auth.v1.AuthService/Login"
+	AuthService_ResetPassword_FullMethodName  = "/api.auth.v1.AuthService/ResetPassword"
+	AuthService_ChangePassword_FullMethodName = "/api.auth.v1.AuthService/ChangePassword"
+	AuthService_RefreshTokens_FullMethodName  = "/api.auth.v1.AuthService/RefreshTokens"
+	AuthService_GetJWKS_FullMethodName        = "/api.auth.v1.AuthService/GetJWKS"
+	AuthService_Logout_FullMethodName         = "/api.auth.v1.AuthService/Logout"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -52,17 +49,9 @@ type AuthServiceClient interface {
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	// Changes user password using reset token from email.
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
-	// Confirms password change across multiple services/applications.
-	// Used when password is changed in one service but needs confirmation in others.
-	ConfirmCrossServicePasswordChange(ctx context.Context, in *ConfirmCrossServicePasswordChangeRequest, opts ...grpc.CallOption) (*ConfirmCrossServicePasswordChangeResponse, error)
 	// Refreshes expired access token using valid refresh token.
 	// Maintains user session without requiring re-authentication.
 	RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*RefreshTokensResponse, error)
-	// Refreshes tokens for specific target application.
-	RefreshTokensForApp(ctx context.Context, in *RefreshTokensForAppRequest, opts ...grpc.CallOption) (*RefreshTokensForAppResponse, error)
-	// Validates current session and returns session details.
-	// Used for session health checks and user context retrieval.
-	CheckSession(ctx context.Context, in *CheckSessionRequest, opts ...grpc.CallOption) (*CheckSessionResponse, error)
 	// Returns JSON Web Key Set for JWT token signature verification.
 	// Public endpoint used by services to validate JWT tokens independently.
 	GetJWKS(ctx context.Context, in *GetJWKSRequest, opts ...grpc.CallOption) (*GetJWKSResponse, error)
@@ -129,40 +118,10 @@ func (c *authServiceClient) ChangePassword(ctx context.Context, in *ChangePasswo
 	return out, nil
 }
 
-func (c *authServiceClient) ConfirmCrossServicePasswordChange(ctx context.Context, in *ConfirmCrossServicePasswordChangeRequest, opts ...grpc.CallOption) (*ConfirmCrossServicePasswordChangeResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ConfirmCrossServicePasswordChangeResponse)
-	err := c.cc.Invoke(ctx, AuthService_ConfirmCrossServicePasswordChange_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authServiceClient) RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*RefreshTokensResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RefreshTokensResponse)
 	err := c.cc.Invoke(ctx, AuthService_RefreshTokens_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) RefreshTokensForApp(ctx context.Context, in *RefreshTokensForAppRequest, opts ...grpc.CallOption) (*RefreshTokensForAppResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RefreshTokensForAppResponse)
-	err := c.cc.Invoke(ctx, AuthService_RefreshTokensForApp_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) CheckSession(ctx context.Context, in *CheckSessionRequest, opts ...grpc.CallOption) (*CheckSessionResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CheckSessionResponse)
-	err := c.cc.Invoke(ctx, AuthService_CheckSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -209,17 +168,9 @@ type AuthServiceServer interface {
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	// Changes user password using reset token from email.
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
-	// Confirms password change across multiple services/applications.
-	// Used when password is changed in one service but needs confirmation in others.
-	ConfirmCrossServicePasswordChange(context.Context, *ConfirmCrossServicePasswordChangeRequest) (*ConfirmCrossServicePasswordChangeResponse, error)
 	// Refreshes expired access token using valid refresh token.
 	// Maintains user session without requiring re-authentication.
 	RefreshTokens(context.Context, *RefreshTokensRequest) (*RefreshTokensResponse, error)
-	// Refreshes tokens for specific target application.
-	RefreshTokensForApp(context.Context, *RefreshTokensForAppRequest) (*RefreshTokensForAppResponse, error)
-	// Validates current session and returns session details.
-	// Used for session health checks and user context retrieval.
-	CheckSession(context.Context, *CheckSessionRequest) (*CheckSessionResponse, error)
 	// Returns JSON Web Key Set for JWT token signature verification.
 	// Public endpoint used by services to validate JWT tokens independently.
 	GetJWKS(context.Context, *GetJWKSRequest) (*GetJWKSResponse, error)
@@ -251,17 +202,8 @@ func (UnimplementedAuthServiceServer) ResetPassword(context.Context, *ResetPassw
 func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedAuthServiceServer) ConfirmCrossServicePasswordChange(context.Context, *ConfirmCrossServicePasswordChangeRequest) (*ConfirmCrossServicePasswordChangeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConfirmCrossServicePasswordChange not implemented")
-}
 func (UnimplementedAuthServiceServer) RefreshTokens(context.Context, *RefreshTokensRequest) (*RefreshTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokens not implemented")
-}
-func (UnimplementedAuthServiceServer) RefreshTokensForApp(context.Context, *RefreshTokensForAppRequest) (*RefreshTokensForAppResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokensForApp not implemented")
-}
-func (UnimplementedAuthServiceServer) CheckSession(context.Context, *CheckSessionRequest) (*CheckSessionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckSession not implemented")
 }
 func (UnimplementedAuthServiceServer) GetJWKS(context.Context, *GetJWKSRequest) (*GetJWKSResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJWKS not implemented")
@@ -380,24 +322,6 @@ func _AuthService_ChangePassword_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_ConfirmCrossServicePasswordChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConfirmCrossServicePasswordChangeRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ConfirmCrossServicePasswordChange(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ConfirmCrossServicePasswordChange_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ConfirmCrossServicePasswordChange(ctx, req.(*ConfirmCrossServicePasswordChangeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AuthService_RefreshTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RefreshTokensRequest)
 	if err := dec(in); err != nil {
@@ -412,42 +336,6 @@ func _AuthService_RefreshTokens_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).RefreshTokens(ctx, req.(*RefreshTokensRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_RefreshTokensForApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RefreshTokensForAppRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).RefreshTokensForApp(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_RefreshTokensForApp_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).RefreshTokensForApp(ctx, req.(*RefreshTokensForAppRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_CheckSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).CheckSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_CheckSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).CheckSession(ctx, req.(*CheckSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -516,20 +404,8 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_ChangePassword_Handler,
 		},
 		{
-			MethodName: "ConfirmCrossServicePasswordChange",
-			Handler:    _AuthService_ConfirmCrossServicePasswordChange_Handler,
-		},
-		{
 			MethodName: "RefreshTokens",
 			Handler:    _AuthService_RefreshTokens_Handler,
-		},
-		{
-			MethodName: "RefreshTokensForApp",
-			Handler:    _AuthService_RefreshTokensForApp_Handler,
-		},
-		{
-			MethodName: "CheckSession",
-			Handler:    _AuthService_CheckSession_Handler,
 		},
 		{
 			MethodName: "GetJWKS",
