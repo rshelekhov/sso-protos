@@ -47,12 +47,9 @@ import appv1 "github.com/rshelekhov/sso-protos/gen/go/api/app/v1"
 - `Login` - Authenticate user and receive tokens
 - `Logout` - Terminate user session
 - `RefreshTokens` - Refresh authentication tokens
-- `RefreshTokensForApp` - Refresh tokens for specific application
-- `CheckSession` - Verify session validity
 - `GetJWKS` - Retrieve JSON Web Key Set for token verification
 - `ResetPassword` - Initiate password reset process
 - `ChangePassword` - Change user password
-- `ConfirmCrossServicePasswordChange` - Confirm password change across services
 
 ### UserService (User Management)
 
@@ -72,7 +69,6 @@ import appv1 "github.com/rshelekhov/sso-protos/gen/go/api/app/v1"
 - **JWT token management** with access/refresh token pairs
 - **Email verification** workflow for new users
 - **Password reset/change** functionality
-- **Cross-service token refresh** for multi-app environments
 - **JWKS endpoint** for token validation
 
 ## Code Generation
