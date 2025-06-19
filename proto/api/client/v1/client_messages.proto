@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package api.client.v1;
+
+import "buf/validate/validate.proto";
+
+option go_package = "rshelekhov.sso.api.client.v1;clientv1";
+
+// Request to register new client
+message RegisterClientRequest {
+  // Human-readable client name for identification and UI display
+  string client_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 255
+  ];
+}
+
+// Response confirming successful client registration
+message RegisterClientResponse {} 
