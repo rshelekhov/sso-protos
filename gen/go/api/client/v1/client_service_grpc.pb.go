@@ -19,113 +19,114 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClientService_RegisterClient_FullMethodName = "/api.client.v1.ClientService/RegisterClient"
+	ClientManagementService_RegisterClient_FullMethodName = "/api.client.v1.ClientManagementService/RegisterClient"
 )
 
-// ClientServiceClient is the client API for ClientService service.
+// ClientManagementServiceClient is the client API for ClientManagementService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Application management service handles registration and configuration of client applications.
-// This service manages which applications can integrate with the SSO system.
-type ClientServiceClient interface {
-	// Registers a new client application in the SSO system.
-	// Creates application credentials and configuration for SSO integration.
-	// Typically used during application onboarding process.
+// Client management service handles registration and configuration of client applications.
+// This service manages which clients can integrate with the SSO system.
+type ClientManagementServiceClient interface {
+	// Registers a new client in the SSO system.
+	// Creates client credentials and configuration for SSO integration.
+	// Typically used during client onboarding process.
 	RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*RegisterClientResponse, error)
 }
 
-type clientServiceClient struct {
+type clientManagementServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewClientServiceClient(cc grpc.ClientConnInterface) ClientServiceClient {
-	return &clientServiceClient{cc}
+func NewClientManagementServiceClient(cc grpc.ClientConnInterface) ClientManagementServiceClient {
+	return &clientManagementServiceClient{cc}
 }
 
-func (c *clientServiceClient) RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*RegisterClientResponse, error) {
+func (c *clientManagementServiceClient) RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*RegisterClientResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RegisterClientResponse)
-	err := c.cc.Invoke(ctx, ClientService_RegisterClient_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ClientManagementService_RegisterClient_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ClientServiceServer is the server API for ClientService service.
-// All implementations must embed UnimplementedClientServiceServer
+// ClientManagementServiceServer is the server API for ClientManagementService service.
+// All implementations must embed UnimplementedClientManagementServiceServer
 // for forward compatibility.
 //
-// Application management service handles registration and configuration of client applications.
-// This service manages which applications can integrate with the SSO system.
-type ClientServiceServer interface {
-	// Registers a new client application in the SSO system.
-	// Creates application credentials and configuration for SSO integration.
-	// Typically used during application onboarding process.
+// Client management service handles registration and configuration of client applications.
+// This service manages which clients can integrate with the SSO system.
+type ClientManagementServiceServer interface {
+	// Registers a new client in the SSO system.
+	// Creates client credentials and configuration for SSO integration.
+	// Typically used during client onboarding process.
 	RegisterClient(context.Context, *RegisterClientRequest) (*RegisterClientResponse, error)
-	mustEmbedUnimplementedClientServiceServer()
+	mustEmbedUnimplementedClientManagementServiceServer()
 }
 
-// UnimplementedClientServiceServer must be embedded to have
+// UnimplementedClientManagementServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedClientServiceServer struct{}
+type UnimplementedClientManagementServiceServer struct{}
 
-func (UnimplementedClientServiceServer) RegisterClient(context.Context, *RegisterClientRequest) (*RegisterClientResponse, error) {
+func (UnimplementedClientManagementServiceServer) RegisterClient(context.Context, *RegisterClientRequest) (*RegisterClientResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterClient not implemented")
 }
-func (UnimplementedClientServiceServer) mustEmbedUnimplementedClientServiceServer() {}
-func (UnimplementedClientServiceServer) testEmbeddedByValue()                       {}
+func (UnimplementedClientManagementServiceServer) mustEmbedUnimplementedClientManagementServiceServer() {
+}
+func (UnimplementedClientManagementServiceServer) testEmbeddedByValue() {}
 
-// UnsafeClientServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ClientServiceServer will
+// UnsafeClientManagementServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ClientManagementServiceServer will
 // result in compilation errors.
-type UnsafeClientServiceServer interface {
-	mustEmbedUnimplementedClientServiceServer()
+type UnsafeClientManagementServiceServer interface {
+	mustEmbedUnimplementedClientManagementServiceServer()
 }
 
-func RegisterClientServiceServer(s grpc.ServiceRegistrar, srv ClientServiceServer) {
-	// If the following call pancis, it indicates UnimplementedClientServiceServer was
+func RegisterClientManagementServiceServer(s grpc.ServiceRegistrar, srv ClientManagementServiceServer) {
+	// If the following call pancis, it indicates UnimplementedClientManagementServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&ClientService_ServiceDesc, srv)
+	s.RegisterService(&ClientManagementService_ServiceDesc, srv)
 }
 
-func _ClientService_RegisterClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClientManagementService_RegisterClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterClientRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClientServiceServer).RegisterClient(ctx, in)
+		return srv.(ClientManagementServiceServer).RegisterClient(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ClientService_RegisterClient_FullMethodName,
+		FullMethod: ClientManagementService_RegisterClient_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).RegisterClient(ctx, req.(*RegisterClientRequest))
+		return srv.(ClientManagementServiceServer).RegisterClient(ctx, req.(*RegisterClientRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ClientService_ServiceDesc is the grpc.ServiceDesc for ClientService service.
+// ClientManagementService_ServiceDesc is the grpc.ServiceDesc for ClientManagementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ClientService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.client.v1.ClientService",
-	HandlerType: (*ClientServiceServer)(nil),
+var ClientManagementService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "api.client.v1.ClientManagementService",
+	HandlerType: (*ClientManagementServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "RegisterClient",
-			Handler:    _ClientService_RegisterClient_Handler,
+			Handler:    _ClientManagementService_RegisterClient_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

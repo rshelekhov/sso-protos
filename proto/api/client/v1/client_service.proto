@@ -6,11 +6,11 @@ import "api/client/v1/client_messages.proto";
 
 option go_package = "rshelekhov.sso.api.client.v1;clientv1";
 
-// Application management service handles registration and configuration of client applications.
-// This service manages which applications can integrate with the SSO system.
-service ClientService {
-  // Registers a new client application in the SSO system.
-  // Creates application credentials and configuration for SSO integration.
-  // Typically used during application onboarding process.
+// Client management service handles registration and configuration of client applications.
+// This service manages which clients can integrate with the SSO system.
+service ClientManagementService {
+  // Registers a new client in the SSO system.
+  // Creates client credentials and configuration for SSO integration.
+  // Typically used during client onboarding process.
   rpc RegisterClient(RegisterClientRequest) returns (RegisterClientResponse);
 }
