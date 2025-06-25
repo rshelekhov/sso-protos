@@ -7,18 +7,50 @@ import "buf/validate/validate.proto";
 
 option go_package = "rshelekhov.sso.api.auth.v1;authv1";
 
+// Platform options for user devices
+enum Platform {
+  // Default unspecified value
+  PLATFORM_UNSPECIFIED = 0;
+
+  // Web platform
+  PLATFORM_WEB = 1;
+
+  // iOS platform
+  PLATFORM_IOS = 2;
+
+  // Android platform
+  PLATFORM_ANDROID = 3;
+}
+
 // Device fingerprint for security and session management
 message UserDeviceData {
-  // Browser/client user agent string
+  // User agent string from the device
   string user_agent = 1 [
     (buf.validate.field).required = true
   ];
 
-  // Client IP address for geo-location and security
+  // User's IP address
   string ip = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.ip = true
   ];
+
+  // Platform type (Web, iOS, Android)
+  Platform platform = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // Only one of app_version or browser_version should be set based on the platform
+  oneof version {
+    option (buf.validate.oneof).required = true;
+
+    // Mobile app version (for iOS/Android)
+    string app_version = 4;
+
+    // Browser version (for web platform)
+    string browser_version = 5;
+  }
 }
 
 // Token information for authentication
