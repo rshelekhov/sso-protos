@@ -28,4 +28,8 @@ service UserService {
   // Deletes any user account by ID (admin operation).
   // Typically restricted to admin users only.
   rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse);
+
+  // Searches for users by email or name.
+  // Can be used for user management or finding specific users.
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
 }
