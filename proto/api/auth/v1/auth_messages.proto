@@ -45,8 +45,13 @@ message RegisterUserRequest {
 
 // Response after user registration attempt
 message RegisterUserResponse {
+  // User's unique identifier
+  string user_id = 1 [
+    (buf.validate.field).required = true
+  ];
+
   // Access and refresh tokens with expiration info
-  TokenData token_data = 1;
+  TokenData token_data = 2;
 }
 
 // Request to verify email address
@@ -86,8 +91,13 @@ message LoginRequest {
 
 // Response containing authentication tokens
 message LoginResponse {
+  // User's unique identifier
+  string user_id = 1 [
+    (buf.validate.field).required = true
+  ];
+
   // Access and refresh tokens with expiration info
-  TokenData token_data = 1;
+  TokenData token_data = 2;
 }
 
 // Request to initiate password reset
