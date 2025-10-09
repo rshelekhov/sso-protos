@@ -39,26 +39,29 @@ message GetUserByIDResponse {
 message UpdateUserRequest {
   // New email address (must be unique if provided)
   string email = 1 [
-    (buf.validate.field).required = true,
     (buf.validate.field).string.email = true,
     (buf.validate.field).string.min_len = 5,
     (buf.validate.field).string.max_len = 255
   ];
 
-  // Current password for identity verification
+  // Current password for identity verification (optional)
   string current_password = 2 [
-    (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8,
     (buf.validate.field).string.max_len = 255,
     (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
   ];
 
-  // New password (optional, requires current_password)
+  // New password (required only if current_password is provided)
   string updated_password = 3 [
-    (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 8,
     (buf.validate.field).string.max_len = 255,
     (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
+  ];
+
+  // Name of the user (optional)
+  string name = 4 [
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 255
   ];
 }
 
@@ -66,9 +69,13 @@ message UpdateUserRequest {
 message UpdateUserResponse {
   // Updated email address
   string email = 1;
+  
+  // Updated name
+  string name = 2;
 
   // Timestamp of last profile modification
-  google.protobuf.Timestamp updated_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+
 }
 
 // Request to delete current user account

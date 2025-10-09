@@ -14,9 +14,12 @@ message User {
   // User's registered email address
   string email = 2;
 
+  // Name of the user
+  string name = 3;
+
   // Email verification status
-  bool verified = 3;
+  bool verified = 4;
 
   // Last profile modification timestamp
-  google.protobuf.Timestamp updated_at = 4; 
+  google.protobuf.Timestamp updated_at = 5; 
 } 

@@ -29,10 +29,12 @@ type User struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// User's registered email address
 	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	// Name of the user
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Email verification status
-	Verified bool `protobuf:"varint,3,opt,name=verified,proto3" json:"verified,omitempty"`
+	Verified bool `protobuf:"varint,4,opt,name=verified,proto3" json:"verified,omitempty"`
 	// Last profile modification timestamp
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -81,6 +83,13 @@ func (x *User) GetEmail() string {
 	return ""
 }
 
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 func (x *User) GetVerified() bool {
 	if x != nil {
 		return x.Verified
@@ -99,13 +108,14 @@ var File_api_user_v1_user_types_proto protoreflect.FileDescriptor
 
 const file_api_user_v1_user_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/user/v1/user_types.proto\x12\vapi.user.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x83\x01\n" +
+	"\x1capi/user/v1/user_types.proto\x12\vapi.user.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x97\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
-	"\bverified\x18\x03 \x01(\bR\bverified\x129\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
+	"\bverified\x18\x04 \x01(\bR\bverified\x129\n" +
 	"\n" +
-	"updated_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB\x92\x01\n" +
+	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB\x92\x01\n" +
 	"\x0fcom.api.user.v1B\x0eUserTypesProtoP\x01Z!rshelekhov.sso.api.user.v1;userv1\xa2\x02\x03AUX\xaa\x02\vApi.User.V1\xca\x02\vApi\\User\\V1\xe2\x02\x17Api\\User\\V1\\GPBMetadata\xea\x02\rApi::User::V1b\x06proto3"
 
 var (

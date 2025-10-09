@@ -203,12 +203,14 @@ type UpdateUserRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// New email address (must be unique if provided)
 	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	// Current password for identity verification
+	// Current password for identity verification (optional)
 	CurrentPassword string `protobuf:"bytes,2,opt,name=current_password,json=currentPassword,proto3" json:"current_password,omitempty"`
-	// New password (optional, requires current_password)
+	// New password (required only if current_password is provided)
 	UpdatedPassword string `protobuf:"bytes,3,opt,name=updated_password,json=updatedPassword,proto3" json:"updated_password,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// Name of the user (optional)
+	Name          string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateUserRequest) Reset() {
@@ -262,13 +264,22 @@ func (x *UpdateUserRequest) GetUpdatedPassword() string {
 	return ""
 }
 
+func (x *UpdateUserRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 // Response confirming profile update with new information
 type UpdateUserResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Updated email address
 	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	// Updated name
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// Timestamp of last profile modification
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -306,6 +317,13 @@ func (*UpdateUserResponse) Descriptor() ([]byte, []int) {
 func (x *UpdateUserResponse) GetEmail() string {
 	if x != nil {
 		return x.Email
+	}
+	return ""
+}
+
+func (x *UpdateUserResponse) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -596,15 +614,18 @@ const file_api_user_v1_user_messages_proto_rawDesc = "" +
 	"\x12GetUserByIDRequest\x12\x1f\n" +
 	"\auser_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\"<\n" +
 	"\x13GetUserByIDResponse\x12%\n" +
-	"\x04user\x18\x01 \x01(\v2\x11.api.user.v1.UserR\x04user\"\xe0\x01\n" +
-	"\x11UpdateUserRequest\x12%\n" +
-	"\x05email\x18\x01 \x01(\tB\x0f\xbaH\f\xc8\x01\x01r\a\x10\x05\x18\xff\x01`\x01R\x05email\x12Q\n" +
-	"\x10current_password\x18\x02 \x01(\tB&\xbaH#\xc8\x01\x01r\x1e\x10\b\x18\xff\x012\x17^[A-Za-z\\d@$!%*?&]{8,}$R\x0fcurrentPassword\x12Q\n" +
-	"\x10updated_password\x18\x03 \x01(\tB&\xbaH#\xc8\x01\x01r\x1e\x10\b\x18\xff\x012\x17^[A-Za-z\\d@$!%*?&]{8,}$R\x0fupdatedPassword\"e\n" +
+	"\x04user\x18\x01 \x01(\v2\x11.api.user.v1.UserR\x04user\"\xf7\x01\n" +
+	"\x11UpdateUserRequest\x12\"\n" +
+	"\x05email\x18\x01 \x01(\tB\f\xbaH\tr\a\x10\x05\x18\xff\x01`\x01R\x05email\x12N\n" +
+	"\x10current_password\x18\x02 \x01(\tB#\xbaH r\x1e\x10\b\x18\xff\x012\x17^[A-Za-z\\d@$!%*?&]{8,}$R\x0fcurrentPassword\x12N\n" +
+	"\x10updated_password\x18\x03 \x01(\tB#\xbaH r\x1e\x10\b\x18\xff\x012\x17^[A-Za-z\\d@$!%*?&]{8,}$R\x0fupdatedPassword\x12\x1e\n" +
+	"\x04name\x18\x04 \x01(\tB\n" +
+	"\xbaH\ar\x05\x10\x03\x18\xff\x01R\x04name\"y\n" +
 	"\x12UpdateUserResponse\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\x129\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x129\n" +
 	"\n" +
-	"updated_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x13\n" +
+	"updated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x13\n" +
 	"\x11DeleteUserRequest\".\n" +
 	"\x12DeleteUserResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"8\n" +

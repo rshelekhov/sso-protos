@@ -35,8 +35,10 @@ type RegisterUserRequest struct {
 	ConfirmPasswordUrl string `protobuf:"bytes,4,opt,name=confirm_password_url,json=confirmPasswordUrl,proto3" json:"confirm_password_url,omitempty"`
 	// Device fingerprint for security tracking
 	UserDeviceData *UserDeviceData `protobuf:"bytes,5,opt,name=user_device_data,json=userDeviceData,proto3" json:"user_device_data,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Name of the user (optional)
+	Name          string `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *RegisterUserRequest) Reset() {
@@ -102,6 +104,13 @@ func (x *RegisterUserRequest) GetUserDeviceData() *UserDeviceData {
 		return x.UserDeviceData
 	}
 	return nil
+}
+
+func (x *RegisterUserRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
 }
 
 // Response after user registration attempt
@@ -816,13 +825,15 @@ var File_api_auth_v1_auth_messages_proto protoreflect.FileDescriptor
 
 const file_api_auth_v1_auth_messages_proto_rawDesc = "" +
 	"\n" +
-	"\x1fapi/auth/v1/auth_messages.proto\x12\vapi.auth.v1\x1a\x1capi/auth/v1/auth_types.proto\x1a\x1bbuf/validate/validate.proto\"\xc6\x02\n" +
+	"\x1fapi/auth/v1/auth_messages.proto\x12\vapi.auth.v1\x1a\x1capi/auth/v1/auth_types.proto\x1a\x1bbuf/validate/validate.proto\"\xe6\x02\n" +
 	"\x13RegisterUserRequest\x12%\n" +
 	"\x05email\x18\x01 \x01(\tB\x0f\xbaH\f\xc8\x01\x01r\a\x10\x05\x18\xff\x01`\x01R\x05email\x12B\n" +
 	"\bpassword\x18\x02 \x01(\tB&\xbaH#\xc8\x01\x01r\x1e\x10\b\x18\xff\x012\x17^[A-Za-z\\d@$!%*?&]{8,}$R\bpassword\x126\n" +
 	"\x10verification_url\x18\x03 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x88\x01\x01R\x0fverificationUrl\x12=\n" +
 	"\x14confirm_password_url\x18\x04 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x88\x01\x01R\x12confirmPasswordUrl\x12M\n" +
-	"\x10user_device_data\x18\x05 \x01(\v2\x1b.api.auth.v1.UserDeviceDataB\x06\xbaH\x03\xc8\x01\x01R\x0euserDeviceData\"n\n" +
+	"\x10user_device_data\x18\x05 \x01(\v2\x1b.api.auth.v1.UserDeviceDataB\x06\xbaH\x03\xc8\x01\x01R\x0euserDeviceData\x12\x1e\n" +
+	"\x04name\x18\x06 \x01(\tB\n" +
+	"\xbaH\ar\x05\x10\x03\x18\xff\x01R\x04name\"n\n" +
 	"\x14RegisterUserResponse\x12\x1f\n" +
 	"\auser_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\x125\n" +
 	"\n" +
