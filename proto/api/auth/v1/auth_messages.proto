@@ -25,7 +25,18 @@ message RegisterUserRequest {
     (buf.validate.field).string.pattern = "^[A-Za-z\\d@$!%*?&]{8,}$"
   ];
 
-  // Base URL where verification link will redirect after email click
+  // URL where the user will be redirected to verify their email.
+  // The SSO service will append a query parameter with the verification token.
+  // 
+  // Format: The token will be added as ?token=<64-char-hex-string>
+  // 
+  // Examples:
+  //   Input:  "https://api-gateway.com/auth/verify-email"
+  //   Result: "https://api-gateway.com/auth/verify-email?token=64-char-hex-string"
+  //
+  // On API gateway, extract the token from query parameters:
+  //   token := r.URL.Query().Get("token")
+  // Then call SSO's VerifyEmail(token) endpoint.
   string verification_url = 3 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.uri = true

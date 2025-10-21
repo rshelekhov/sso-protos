@@ -29,7 +29,21 @@ type RegisterUserRequest struct {
 	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	// Plain text password, will be hashed server-side
 	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	// Base URL where verification link will redirect after email click
+	// URL where the user will be redirected to verify their email.
+	// The SSO service will append a query parameter with the verification token.
+	//
+	// Format: The token will be added as ?token=<64-char-hex-string>
+	//
+	// Examples:
+	//
+	//	Input:  "https://api-gateway.com/auth/verify-email"
+	//	Result: "https://api-gateway.com/auth/verify-email?token=64-char-hex-string"
+	//
+	// On API gateway, extract the token from query parameters:
+	//
+	//	token := r.URL.Query().Get("token")
+	//
+	// Then call SSO's VerifyEmail(token) endpoint.
 	VerificationUrl string `protobuf:"bytes,3,opt,name=verification_url,json=verificationUrl,proto3" json:"verification_url,omitempty"`
 	// URL for password confirmation flows, used for multi-service password change
 	ConfirmPasswordUrl string `protobuf:"bytes,4,opt,name=confirm_password_url,json=confirmPasswordUrl,proto3" json:"confirm_password_url,omitempty"`
