@@ -2,4 +2,3 @@ vendor.protobuf
 bin
 .DS_Store
 .vscode
-.idea

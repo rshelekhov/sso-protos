@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package api.common.v1;
+
+option go_package = "github.com/rshelekhov/sso-protos/gen/go/api/common/v1;commonv1";
+
+// ErrorCode represents domain-specific error codes for the SSO service.
+// These codes provide fine-grained error information beyond standard gRPC status codes.
+enum ErrorCode {
+  // Unspecified error code (should not be used)
+  ERROR_CODE_UNSPECIFIED = 0;
+
+  // =========================================================================
+  // Authentication Errors (1000-1099)
+  // =========================================================================
+
+  // Invalid email or password provided during login
+  ERROR_CODE_INVALID_CREDENTIALS = 1000;
+
+  // User with the provided email already exists in the system
+  ERROR_CODE_USER_ALREADY_EXISTS = 1001;
+
+  // User with the provided identifier was not found
+  ERROR_CODE_USER_NOT_FOUND = 1002;
+
+  // User's session has expired and needs to be refreshed
+  ERROR_CODE_SESSION_EXPIRED = 1003;
+
+  // Session was not found or has been invalidated
+  ERROR_CODE_SESSION_NOT_FOUND = 1004;
+
+  // The email address is already associated with another account
+  ERROR_CODE_EMAIL_ALREADY_TAKEN = 1005;
+
+  // User's device information was not found
+  ERROR_CODE_USER_DEVICE_NOT_FOUND = 1006;
+
+  // =========================================================================
+  // Verification Errors (1100-1199)
+  // =========================================================================
+
+  // Verification token has expired
+  ERROR_CODE_TOKEN_EXPIRED = 1100;
+
+  // Verification token was not found or is invalid
+  ERROR_CODE_VERIFICATION_TOKEN_NOT_FOUND = 1101;
+
+  // Token expired, but a new verification email has been sent
+  ERROR_CODE_TOKEN_EXPIRED_EMAIL_RESENT = 1102;
+
+  // =========================================================================
+  // Validation Errors (1200-1299)
+  // =========================================================================
+
+  // The provided passwords do not match
+  ERROR_CODE_PASSWORDS_DO_NOT_MATCH = 1200;
+
+  // No changes detected in email (new email is the same as current)
+  ERROR_CODE_NO_EMAIL_CHANGES_DETECTED = 1201;
+
+  // No changes detected in password (new password is the same as current)
+  ERROR_CODE_NO_PASSWORD_CHANGES_DETECTED = 1202;
+
+  // No changes detected in name (new name is the same as current)
+  ERROR_CODE_NO_NAME_CHANGES_DETECTED = 1203;
+
+  // The provided client ID is not allowed or invalid
+  ERROR_CODE_CLIENT_ID_NOT_ALLOWED = 1204;
+
+  // Request validation failed (generic validation error)
+  ERROR_CODE_VALIDATION_ERROR = 1205;
+
+  // Current password is required for this operation
+  ERROR_CODE_CURRENT_PASSWORD_REQUIRED = 1206;
+
+  // =========================================================================
+  // Client Management Errors (1300-1399)
+  // =========================================================================
+
+  // Client with the provided ID was not found
+  ERROR_CODE_CLIENT_NOT_FOUND = 1300;
+
+  // Client with the provided name already exists
+  ERROR_CODE_CLIENT_ALREADY_EXISTS = 1301;
+
+  // Client name cannot be empty
+  ERROR_CODE_CLIENT_NAME_EMPTY = 1302;
+
+  // =========================================================================
+  // Internal Service Errors (1500-1599)
+  // =========================================================================
+  //
+  // Note: Only include internal error codes when clients need to handle them differently.
+
+  // Failed to send verification email - user registered but email delivery failed
+  // Client should show: "Account created. Verification email will arrive shortly."
+  ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL = 1500;
+
+  // Failed to send password reset email - email service unavailable
+  // Client should show: "Request received. Email will be sent shortly if account exists."
+  ERROR_CODE_FAILED_TO_SEND_RESET_PASSWORD_EMAIL = 1501;
+}
+
+// ErrorDetail provides structured error information.
+// This message is attached to google.rpc.Status.details for rich error responses.
+message ErrorDetail {
+  // The domain-specific error code
+  ErrorCode code = 1;
+
+  // Human-readable error message
+  string message = 2;
+
+  // Additional metadata providing context about the error
+  // Examples: {"field": "email", "reason": "already_exists"}
+  map<string, string> metadata = 3;
+}

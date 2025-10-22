@@ -571,7 +571,7 @@ func (*ChangePasswordResponse) Descriptor() ([]byte, []int) {
 // Request to terminate user session
 type LogoutRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Device info to identify which session to terminate
+	// Device info to identify the session to terminate
 	UserDeviceData *UserDeviceData `protobuf:"bytes,1,opt,name=user_device_data,json=userDeviceData,proto3" json:"user_device_data,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -654,9 +654,9 @@ func (*LogoutResponse) Descriptor() ([]byte, []int) {
 // Request to refresh authentication tokens
 type RefreshTokensRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Valid refresh token
+	// Refresh token to refresh access token
 	RefreshToken string `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	// Device info for security validation
+	// Device info to identify the session to refresh
 	UserDeviceData *UserDeviceData `protobuf:"bytes,2,opt,name=user_device_data,json=userDeviceData,proto3" json:"user_device_data,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache

@@ -32,6 +32,15 @@ type ClientManagementServiceClient interface {
 	// Registers a new client in the SSO system.
 	// Creates client credentials and configuration for SSO integration.
 	// Typically used during client onboarding process.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format
+	// - ERROR_CODE_CLIENT_NAME_EMPTY: Client name is required
+	//
+	// Client errors:
+	// - ERROR_CODE_CLIENT_ALREADY_EXISTS (AlreadyExists): Client with this name already exists
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*RegisterClientResponse, error)
 }
 
@@ -63,6 +72,15 @@ type ClientManagementServiceServer interface {
 	// Registers a new client in the SSO system.
 	// Creates client credentials and configuration for SSO integration.
 	// Typically used during client onboarding process.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format
+	// - ERROR_CODE_CLIENT_NAME_EMPTY: Client name is required
+	//
+	// Client errors:
+	// - ERROR_CODE_CLIENT_ALREADY_EXISTS (AlreadyExists): Client with this name already exists
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	RegisterClient(context.Context, *RegisterClientRequest) (*RegisterClientResponse, error)
 	mustEmbedUnimplementedClientManagementServiceServer()
 }

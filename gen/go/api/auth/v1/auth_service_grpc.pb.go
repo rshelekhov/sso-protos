@@ -38,25 +38,105 @@ const (
 type AuthServiceClient interface {
 	// Initiates user registration with email verification workflow.
 	// Creates unverified user account and sends verification email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Registration errors:
+	// - ERROR_CODE_USER_ALREADY_EXISTS (AlreadyExists): User with this email already exists
+	//
+	// Email delivery errors:
+	//   - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
+	//     Client should show: "Account created. Verification email will arrive shortly."
+	//
+	// May return Internal (500) for other transient failures. Clients should retry.
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
 	// Verifies user email using token from registration email.
 	// Activates user account and allows login after successful verification.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing token
+	//
+	// Token errors:
+	//   - ERROR_CODE_VERIFICATION_TOKEN_NOT_FOUND (NotFound): Token is invalid or already used
+	//   - ERROR_CODE_TOKEN_EXPIRED_EMAIL_RESENT (FailedPrecondition): Token expired, new verification email sent.
+	//     Client should inform user to check their email for the new token.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailResponse, error)
 	// Authenticates user credentials and creates new session.
 	// Returns access/refresh token pair for authenticated requests.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Authentication errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided email does not exist
+	// - ERROR_CODE_INVALID_CREDENTIALS (Unauthenticated): Wrong email or password
+	//
+	// May return Internal (500) for transient failures. Clients should retry
+	// with exponential backoff.
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	// Initiates password reset workflow by sending reset email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided email does not exist
+	//
+	// Email delivery errors:
+	//   - ERROR_CODE_FAILED_TO_SEND_RESET_PASSWORD_EMAIL (Internal): Email service unavailable.
+	//     Client should show: "Request received. Email will be sent shortly if account exists."
+	//
+	// May return Internal (500) for other transient failures. Clients should retry.
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	// Changes user password using reset token from email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	// - ERROR_CODE_NO_PASSWORD_CHANGES_DETECTED: New password same as current password
+	//
+	// Token errors:
+	//   - ERROR_CODE_VERIFICATION_TOKEN_NOT_FOUND (NotFound): Token is invalid or not found
+	//   - ERROR_CODE_TOKEN_EXPIRED_EMAIL_RESENT (FailedPrecondition): Token expired, new reset email sent.
+	//     Client should inform user to check their email for the new token.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	// Refreshes expired access token using valid refresh token.
 	// Maintains user session without requiring re-authentication.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Session errors:
+	// - ERROR_CODE_SESSION_NOT_FOUND (Unauthenticated): Session not found or invalidated. User must login.
+	// - ERROR_CODE_SESSION_EXPIRED (Unauthenticated): Session expired. User must login.
+	// - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered. User must login.
+	//
+	// May return Internal (500) for transient failures. Clients should retry once before forcing re-login.
 	RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*RefreshTokensResponse, error)
 	// Returns JSON Web Key Set for JWT token signature verification.
 	// Public endpoint used by services to validate JWT tokens independently.
+	//
+	// Public endpoint - no authentication required.
+	// Clients should cache response according to Cache-Control headers.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetJWKS(ctx context.Context, in *GetJWKSRequest, opts ...grpc.CallOption) (*GetJWKSResponse, error)
 	// Terminates user session and invalidates tokens.
-	// Clears session data for specific device while preserving other device sessions.
+	// Clears session data for given device while preserving other device sessions.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Session errors:
+	// - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered or already logged out
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 }
 
@@ -157,25 +237,105 @@ func (c *authServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts 
 type AuthServiceServer interface {
 	// Initiates user registration with email verification workflow.
 	// Creates unverified user account and sends verification email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Registration errors:
+	// - ERROR_CODE_USER_ALREADY_EXISTS (AlreadyExists): User with this email already exists
+	//
+	// Email delivery errors:
+	//   - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
+	//     Client should show: "Account created. Verification email will arrive shortly."
+	//
+	// May return Internal (500) for other transient failures. Clients should retry.
 	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
 	// Verifies user email using token from registration email.
 	// Activates user account and allows login after successful verification.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing token
+	//
+	// Token errors:
+	//   - ERROR_CODE_VERIFICATION_TOKEN_NOT_FOUND (NotFound): Token is invalid or already used
+	//   - ERROR_CODE_TOKEN_EXPIRED_EMAIL_RESENT (FailedPrecondition): Token expired, new verification email sent.
+	//     Client should inform user to check their email for the new token.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailResponse, error)
 	// Authenticates user credentials and creates new session.
 	// Returns access/refresh token pair for authenticated requests.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Authentication errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided email does not exist
+	// - ERROR_CODE_INVALID_CREDENTIALS (Unauthenticated): Wrong email or password
+	//
+	// May return Internal (500) for transient failures. Clients should retry
+	// with exponential backoff.
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	// Initiates password reset workflow by sending reset email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided email does not exist
+	//
+	// Email delivery errors:
+	//   - ERROR_CODE_FAILED_TO_SEND_RESET_PASSWORD_EMAIL (Internal): Email service unavailable.
+	//     Client should show: "Request received. Email will be sent shortly if account exists."
+	//
+	// May return Internal (500) for other transient failures. Clients should retry.
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	// Changes user password using reset token from email.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	// - ERROR_CODE_NO_PASSWORD_CHANGES_DETECTED: New password same as current password
+	//
+	// Token errors:
+	//   - ERROR_CODE_VERIFICATION_TOKEN_NOT_FOUND (NotFound): Token is invalid or not found
+	//   - ERROR_CODE_TOKEN_EXPIRED_EMAIL_RESENT (FailedPrecondition): Token expired, new reset email sent.
+	//     Client should inform user to check their email for the new token.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	// Refreshes expired access token using valid refresh token.
 	// Maintains user session without requiring re-authentication.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Session errors:
+	// - ERROR_CODE_SESSION_NOT_FOUND (Unauthenticated): Session not found or invalidated. User must login.
+	// - ERROR_CODE_SESSION_EXPIRED (Unauthenticated): Session expired. User must login.
+	// - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered. User must login.
+	//
+	// May return Internal (500) for transient failures. Clients should retry once before forcing re-login.
 	RefreshTokens(context.Context, *RefreshTokensRequest) (*RefreshTokensResponse, error)
 	// Returns JSON Web Key Set for JWT token signature verification.
 	// Public endpoint used by services to validate JWT tokens independently.
+	//
+	// Public endpoint - no authentication required.
+	// Clients should cache response according to Cache-Control headers.
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetJWKS(context.Context, *GetJWKSRequest) (*GetJWKSResponse, error)
 	// Terminates user session and invalidates tokens.
-	// Clears session data for specific device while preserving other device sessions.
+	// Clears session data for given device while preserving other device sessions.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// Session errors:
+	// - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered or already logged out
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
