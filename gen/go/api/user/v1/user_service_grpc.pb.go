@@ -36,21 +36,79 @@ const (
 type UserServiceClient interface {
 	// Retrieves current authenticated user's profile information.
 	// Uses token context to identify user, no additional parameters needed.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	// Retrieves any user's profile by their unique identifier.
 	// Typically requires admin privileges or specific permissions.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error)
 	// Updates current user's profile information.
 	// Can modify email and password with proper current password validation.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format
+	// - ERROR_CODE_CURRENT_PASSWORD_REQUIRED: Current password required if updating password
+	// - ERROR_CODE_NO_EMAIL_CHANGES_DETECTED: New email same as current email
+	// - ERROR_CODE_NO_PASSWORD_CHANGES_DETECTED: New password same as current password
+	// - ERROR_CODE_NO_NAME_CHANGES_DETECTED: New name same as current name
+	// - ERROR_CODE_PASSWORDS_DO_NOT_MATCH: Password confirmation mismatch
+	// - ERROR_CODE_INVALID_CREDENTIALS: Current password is incorrect
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist
+	// - ERROR_CODE_EMAIL_ALREADY_TAKEN (AlreadyExists): Email already used by another account
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	// Deletes current authenticated user's account permanently.
 	// This action is irreversible and removes all user data.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist or already deleted
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	// Deletes any user account by ID (admin operation).
 	// Typically restricted to admin users only.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist or already deleted
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	DeleteUserByID(ctx context.Context, in *DeleteUserByIDRequest, opts ...grpc.CallOption) (*DeleteUserByIDResponse, error)
 	// Searches for users by email or name.
 	// Can be used for user management or finding specific users.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	SearchUsers(ctx context.Context, in *SearchUsersRequest, opts ...grpc.CallOption) (*SearchUsersResponse, error)
 }
 
@@ -131,21 +189,79 @@ func (c *userServiceClient) SearchUsers(ctx context.Context, in *SearchUsersRequ
 type UserServiceServer interface {
 	// Retrieves current authenticated user's profile information.
 	// Uses token context to identify user, no additional parameters needed.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	// Retrieves any user's profile by their unique identifier.
 	// Typically requires admin privileges or specific permissions.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error)
 	// Updates current user's profile information.
 	// Can modify email and password with proper current password validation.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format
+	// - ERROR_CODE_CURRENT_PASSWORD_REQUIRED: Current password required if updating password
+	// - ERROR_CODE_NO_EMAIL_CHANGES_DETECTED: New email same as current email
+	// - ERROR_CODE_NO_PASSWORD_CHANGES_DETECTED: New password same as current password
+	// - ERROR_CODE_NO_NAME_CHANGES_DETECTED: New name same as current name
+	// - ERROR_CODE_PASSWORDS_DO_NOT_MATCH: Password confirmation mismatch
+	// - ERROR_CODE_INVALID_CREDENTIALS: Current password is incorrect
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist
+	// - ERROR_CODE_EMAIL_ALREADY_TAKEN (AlreadyExists): Email already used by another account
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	// Deletes current authenticated user's account permanently.
 	// This action is irreversible and removes all user data.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist or already deleted
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	// Deletes any user account by ID (admin operation).
 	// Typically restricted to admin users only.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// User errors:
+	// - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist or already deleted
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	DeleteUserByID(context.Context, *DeleteUserByIDRequest) (*DeleteUserByIDResponse, error)
 	// Searches for users by email or name.
 	// Can be used for user management or finding specific users.
+	//
+	// Authentication required - expects valid JWT in metadata.
+	//
+	// Validation errors (InvalidArgument):
+	// - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
+	//
+	// May return Internal (500) for transient failures. Clients should retry.
 	SearchUsers(context.Context, *SearchUsersRequest) (*SearchUsersResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }

@@ -158,7 +158,7 @@ message ChangePasswordResponse {}
 
 // Request to terminate user session
 message LogoutRequest {
-  // Device info to identify which session to terminate
+  // Device info to identify the session to terminate
   UserDeviceData user_device_data = 1 [
     (buf.validate.field).required = true
   ];
@@ -169,12 +169,12 @@ message LogoutResponse {}
 
 // Request to refresh authentication tokens
 message RefreshTokensRequest {
-  // Valid refresh token
+  // Refresh token to refresh access token
   string refresh_token = 1 [
     (buf.validate.field).required = true
   ];
 
-  // Device info for security validation
+  // Device info to identify the session to refresh
   UserDeviceData user_device_data = 2 [
     (buf.validate.field).required = true
   ];
