@@ -46,8 +46,7 @@ type AuthServiceClient interface {
 	// - ERROR_CODE_USER_ALREADY_EXISTS (AlreadyExists): User with this email already exists
 	//
 	// Email delivery errors:
-	//   - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
-	//     Client should show: "Account created. Verification email will arrive shortly."
+	// - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
 	//
 	// May return Internal (500) for other transient failures. Clients should retry.
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
@@ -245,8 +244,7 @@ type AuthServiceServer interface {
 	// - ERROR_CODE_USER_ALREADY_EXISTS (AlreadyExists): User with this email already exists
 	//
 	// Email delivery errors:
-	//   - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
-	//     Client should show: "Account created. Verification email will arrive shortly."
+	// - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
 	//
 	// May return Internal (500) for other transient failures. Clients should retry.
 	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
