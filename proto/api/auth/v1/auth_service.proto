@@ -20,8 +20,7 @@ service AuthService {
   //
   // Email delivery errors:
   // - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
-  //   Client should show: "Account created. Verification email will arrive shortly."
-  //
+  //   
   // May return Internal (500) for other transient failures. Clients should retry.
   rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
   
