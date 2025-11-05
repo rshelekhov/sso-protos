@@ -515,7 +515,13 @@ func (x *DeleteUserByIDResponse) GetSuccess() bool {
 type SearchUsersRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Search query (email or name)
-	Query         string `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	Query string `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	// Page size (number of results per page)
+	// Default: 50, Max: 100
+	PageSize *int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
+	// Cursor for pagination (opaque token from previous response)
+	// Empty or omit for first page
+	PageToken     *string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3,oneof" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -557,11 +563,32 @@ func (x *SearchUsersRequest) GetQuery() string {
 	return ""
 }
 
+func (x *SearchUsersRequest) GetPageSize() int32 {
+	if x != nil && x.PageSize != nil {
+		return *x.PageSize
+	}
+	return 0
+}
+
+func (x *SearchUsersRequest) GetPageToken() string {
+	if x != nil && x.PageToken != nil {
+		return *x.PageToken
+	}
+	return ""
+}
+
 // Response containing list of users matching the search query
 type SearchUsersResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// List of users matching the search query
-	Users         []*User `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	Users []*User `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	// Total count of matching users (for pagination UI)
+	TotalCount int32 `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	// Cursor token for retrieving the next page
+	// Empty string if no more results available
+	NextPageToken string `protobuf:"bytes,3,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	// Whether there are more results available
+	HasMore       bool `protobuf:"varint,4,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -603,6 +630,27 @@ func (x *SearchUsersResponse) GetUsers() []*User {
 	return nil
 }
 
+func (x *SearchUsersResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *SearchUsersResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+func (x *SearchUsersResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
 var File_api_user_v1_user_messages_proto protoreflect.FileDescriptor
 
 const file_api_user_v1_user_messages_proto_rawDesc = "" +
@@ -632,12 +680,22 @@ const file_api_user_v1_user_messages_proto_rawDesc = "" +
 	"\x15DeleteUserByIDRequest\x12\x1f\n" +
 	"\auser_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\"2\n" +
 	"\x16DeleteUserByIDResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"9\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xa7\x01\n" +
 	"\x12SearchUsersRequest\x12#\n" +
 	"\x05query\x18\x01 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x03\x18\xff\x01R\x05query\">\n" +
+	"\xc8\x01\x01r\x05\x10\x03\x18\xff\x01R\x05query\x12+\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x01H\x00R\bpageSize\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"page_token\x18\x03 \x01(\tH\x01R\tpageToken\x88\x01\x01B\f\n" +
+	"\n" +
+	"_page_sizeB\r\n" +
+	"\v_page_token\"\xa2\x01\n" +
 	"\x13SearchUsersResponse\x12'\n" +
-	"\x05users\x18\x01 \x03(\v2\x11.api.user.v1.UserR\x05usersB\x95\x01\n" +
+	"\x05users\x18\x01 \x03(\v2\x11.api.user.v1.UserR\x05users\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x05R\n" +
+	"totalCount\x12&\n" +
+	"\x0fnext_page_token\x18\x03 \x01(\tR\rnextPageToken\x12\x19\n" +
+	"\bhas_more\x18\x04 \x01(\bR\ahasMoreB\x95\x01\n" +
 	"\x0fcom.api.user.v1B\x11UserMessagesProtoP\x01Z!rshelekhov.sso.api.user.v1;userv1\xa2\x02\x03AUX\xaa\x02\vApi.User.V1\xca\x02\vApi\\User\\V1\xe2\x02\x17Api\\User\\V1\\GPBMetadata\xea\x02\rApi::User::V1b\x06proto3"
 
 var (
@@ -687,6 +745,7 @@ func file_api_user_v1_user_messages_proto_init() {
 		return
 	}
 	file_api_user_v1_user_types_proto_init()
+	file_api_user_v1_user_messages_proto_msgTypes[10].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

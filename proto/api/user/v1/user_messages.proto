@@ -110,10 +110,31 @@ message SearchUsersRequest {
     (buf.validate.field).string.min_len = 3,
     (buf.validate.field).string.max_len = 255
   ];
+
+  // Page size (number of results per page)
+   // Default: 50, Max: 100
+   optional int32 page_size = 2 [
+     (buf.validate.field).int32.gte = 1,
+     (buf.validate.field).int32.lte = 100
+   ];
+
+   // Cursor for pagination (opaque token from previous response)
+   // Empty or omit for first page
+   optional string page_token = 3;
 }
 
 // Response containing list of users matching the search query
 message SearchUsersResponse {
   // List of users matching the search query
   repeated User users = 1;
+
+    // Total count of matching users (for pagination UI)
+    int32 total_count = 2;
+
+    // Cursor token for retrieving the next page
+    // Empty string if no more results available
+    string next_page_token = 3;
+
+    // Whether there are more results available
+    bool has_more = 4;
 }
