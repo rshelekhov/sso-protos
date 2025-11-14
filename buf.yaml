@@ -2,7 +2,7 @@
 version: v2
 modules:
   - path: proto
-    name: buf.build/rshelekhov/msa-messenger-protos
+    name: buf.build/r-shelekhov/sso
 deps:
   - buf.build/bufbuild/protovalidate
 lint:
