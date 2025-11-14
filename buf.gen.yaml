@@ -1,4 +1,7 @@
 version: v2
+modules:
+  - path: .
+    name: buf.build/r-shelekhov/sso
 managed:
   enabled: true
   # Don't modify any file option or field option for protovalidate.
