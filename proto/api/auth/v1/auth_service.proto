@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.auth.v1;
 
 import "api/auth/v1/auth_messages.proto";
+import "google/api/annotations.proto";
 
 option go_package = "rshelekhov.sso.api.auth.v1;authv1";
 
@@ -22,7 +23,12 @@ service AuthService {
   // - ERROR_CODE_FAILED_TO_SEND_VERIFICATION_EMAIL (Internal): User registered but email failed.
   //   
   // May return Internal (500) for other transient failures. Clients should retry.
-  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/register"
+      body: "*"
+    };
+  };
   
   // Verifies user email using token from registration email.
   // Activates user account and allows login after successful verification.
@@ -36,7 +42,12 @@ service AuthService {
   //   Client should inform user to check their email for the new token.
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/verify-email"
+      body: "*"
+    };
+  };
   
   // Authenticates user credentials and creates new session.
   // Returns access/refresh token pair for authenticated requests.
@@ -50,7 +61,12 @@ service AuthService {
   //
   // May return Internal (500) for transient failures. Clients should retry
   // with exponential backoff.
-  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+  };
   
   // Initiates password reset workflow by sending reset email.
   //
@@ -65,7 +81,12 @@ service AuthService {
   //   Client should show: "Request received. Email will be sent shortly if account exists."
   //
   // May return Internal (500) for other transient failures. Clients should retry.
-  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/reset-password"
+      body: "*"
+    };
+  };
   
   // Changes user password using reset token from email.
   //
@@ -79,7 +100,12 @@ service AuthService {
   //   Client should inform user to check their email for the new token.
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/change-password"
+      body: "*"
+    };
+  };
 
   // Refreshes expired access token using valid refresh token.
   // Maintains user session without requiring re-authentication.
@@ -93,7 +119,12 @@ service AuthService {
   // - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered. User must login.
   //
   // May return Internal (500) for transient failures. Clients should retry once before forcing re-login.
-  rpc RefreshTokens(RefreshTokensRequest) returns (RefreshTokensResponse);
+  rpc RefreshTokens(RefreshTokensRequest) returns (RefreshTokensResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/refresh"
+      body: "*"
+    };
+  };
 
   // Returns JSON Web Key Set for JWT token signature verification.
   // Public endpoint used by services to validate JWT tokens independently.
@@ -102,7 +133,11 @@ service AuthService {
   // Clients should cache response according to Cache-Control headers.
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse);
+  rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse) {
+    option (google.api.http) = {
+      get: "/v1/auth/.well-known/jwks.json"
+    };
+  };
   
   // Terminates user session and invalidates tokens.
   // Clears session data for given device while preserving other device sessions.
@@ -116,5 +151,10 @@ service AuthService {
   // - ERROR_CODE_USER_DEVICE_NOT_FOUND (NotFound): Device not registered or already logged out
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/logout"
+      body: "*"
+    };
+  };
 }

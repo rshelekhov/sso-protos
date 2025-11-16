@@ -1,7 +1,4 @@
 version: v2
-modules:
-  - path: .
-    name: buf.build/r-shelekhov/sso
 managed:
   enabled: true
   # Don't modify any file option or field option for protovalidate.
@@ -16,5 +13,7 @@ plugins:
   - local: protoc-gen-go-grpc
     out: gen/go
     opt: paths=source_relative
-inputs:
-  - directory: proto
+  - local: protoc-gen-grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative

@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.user.v1;
 
 import "api/user/v1/user_messages.proto";
+import "google/api/annotations.proto";
 
 option go_package = "rshelekhov.sso.api.user.v1;userv1";
 
@@ -18,7 +19,11 @@ service UserService {
   // - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/user"
+    };
+  };
   
   // Retrieves any user's profile by their unique identifier.
   // Typically requires admin privileges or specific permissions.
@@ -32,7 +37,11 @@ service UserService {
   // - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/{user_id}"
+    };
+  };
   
   // Updates current user's profile information.
   // Can modify email and password with proper current password validation.
@@ -53,7 +62,12 @@ service UserService {
   // - ERROR_CODE_EMAIL_ALREADY_TAKEN (AlreadyExists): Email already used by another account
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/v1/user"
+      body: "*"
+    };
+  };
   
   // Deletes current authenticated user's account permanently.
   // This action is irreversible and removes all user data.
@@ -64,7 +78,11 @@ service UserService {
   // - ERROR_CODE_USER_NOT_FOUND (NotFound): User does not exist or already deleted
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/user"
+    };
+  };
   
   // Deletes any user account by ID (admin operation).
   // Typically restricted to admin users only.
@@ -78,7 +96,11 @@ service UserService {
   // - ERROR_CODE_USER_NOT_FOUND (NotFound): User with provided ID does not exist or already deleted
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse);
+  rpc DeleteUserByID(DeleteUserByIDRequest) returns (DeleteUserByIDResponse) {
+    option (google.api.http) = {
+      delete: "/v1/user/{user_id}"
+    };
+  };
 
   // Searches for users by email or name.
   // Can be used for user management or finding specific users.
@@ -89,5 +111,9 @@ service UserService {
   // - ERROR_CODE_VALIDATION_ERROR: Invalid request format or missing required fields
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/search"
+    };
+  };
 }
