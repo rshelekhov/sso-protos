@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.client.v1;
 
 import "api/client/v1/client_messages.proto";
+import "google/api/annotations.proto";
 
 option go_package = "rshelekhov.sso.api.client.v1;clientv1";
 
@@ -21,5 +22,10 @@ service ClientManagementService {
   // - ERROR_CODE_CLIENT_ALREADY_EXISTS (AlreadyExists): Client with this name already exists
   //
   // May return Internal (500) for transient failures. Clients should retry.
-  rpc RegisterClient(RegisterClientRequest) returns (RegisterClientResponse);
+  rpc RegisterClient(RegisterClientRequest) returns (RegisterClientResponse) {
+    option (google.api.http) = {
+      post: "/v1/clients/register"
+      body: "*"
+    };
+  };
 }
