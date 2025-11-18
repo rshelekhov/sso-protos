@@ -44,8 +44,7 @@ service AuthService {
   // May return Internal (500) for transient failures. Clients should retry.
   rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {
     option (google.api.http) = {
-      post: "/v1/auth/verify-email"
-      body: "*"
+      get: "/v1/auth/verify-email" // Token passed as query parameter "token"
     };
   };
   
