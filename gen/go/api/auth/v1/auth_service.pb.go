@@ -25,10 +25,10 @@ var File_api_auth_v1_auth_service_proto protoreflect.FileDescriptor
 
 const file_api_auth_v1_auth_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/auth/v1/auth_service.proto\x12\vapi.auth.v1\x1a\x1fapi/auth/v1/auth_messages.proto\x1a\x1cgoogle/api/annotations.proto2\x8d\a\n" +
+	"\x1eapi/auth/v1/auth_service.proto\x12\vapi.auth.v1\x1a\x1fapi/auth/v1/auth_messages.proto\x1a\x1cgoogle/api/annotations.proto2\x8a\a\n" +
 	"\vAuthService\x12q\n" +
-	"\fRegisterUser\x12 .api.auth.v1.RegisterUserRequest\x1a!.api.auth.v1.RegisterUserResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/auth/register\x12r\n" +
-	"\vVerifyEmail\x12\x1f.api.auth.v1.VerifyEmailRequest\x1a .api.auth.v1.VerifyEmailResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/auth/verify-email\x12Y\n" +
+	"\fRegisterUser\x12 .api.auth.v1.RegisterUserRequest\x1a!.api.auth.v1.RegisterUserResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/auth/register\x12o\n" +
+	"\vVerifyEmail\x12\x1f.api.auth.v1.VerifyEmailRequest\x1a .api.auth.v1.VerifyEmailResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/auth/verify-email\x12Y\n" +
 	"\x05Login\x12\x19.api.auth.v1.LoginRequest\x1a\x1a.api.auth.v1.LoginResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/auth/login\x12z\n" +
 	"\rResetPassword\x12!.api.auth.v1.ResetPasswordRequest\x1a\".api.auth.v1.ResetPasswordResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/v1/auth/reset-password\x12~\n" +
 	"\x0eChangePassword\x12\".api.auth.v1.ChangePasswordRequest\x1a#.api.auth.v1.ChangePasswordResponse\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/v1/auth/change-password\x12s\n" +
