@@ -29,23 +29,91 @@ type RegisterUserRequest struct {
 	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	// Plain text password, will be hashed server-side
 	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	// URL where the user will be redirected to verify their email.
-	// The SSO service will append a query parameter with the verification token.
+	// URL where users will verify their email address.
+	// The SSO service appends ?token=<64-char-hex> to this URL when sending the verification email.
 	//
-	// Format: The token will be added as ?token=<64-char-hex-string>
+	// ⚠️ IMPORTANT: This should be YOUR application's URL, not SSO's internal service URL!
+	//
+	// Two implementation patterns:
+	//
+	// Pattern A - Via Your Application (Recommended for custom UX):
+	//
+	//	Input:  "https://your-app.com/verify-email"
+	//	Email:  "https://your-app.com/verify-email?token=abc123..."
+	//	Flow:   User clicks → Your app receives → Extract token → Call SSO.VerifyEmail(token)
+	//	Benefit: Custom success/error pages, logging, analytics
+	//
+	// Pattern B - Direct to SSO (Simplest):
+	//
+	//	Input:  "https://sso.yourcompany.com/v1/auth/verify-email"
+	//	Email:  "https://sso.yourcompany.com/v1/auth/verify-email?token=abc123..."
+	//	Flow:   User clicks → SSO handles verification automatically
+	//	Benefit: No code needed, SSO manages everything
+	//
+	// Common mistakes:
+	//
+	//	❌ "http://sso-service:44044/v1/auth/verify-email" (internal URL, users can't reach it)
+	//	❌ "/v1/auth/verify-email" (missing domain)
+	//	✅ "https://your-app.com/auth/verify" (your application)
+	//	✅ "https://sso.public.com/v1/auth/verify-email" (SSO's public endpoint)
+	//
+	// Implementation example (Pattern A):
+	//
+	//	// Your application endpoint
+	//	func VerifyEmail(w http.ResponseWriter, r *http.Request) {
+	//	    token := r.URL.Query().Get("token")
+	//	    _, err := ssoClient.VerifyEmail(ctx, &authv1.VerifyEmailRequest{Token: token})
+	//	    if err != nil {
+	//	        http.Redirect(w, r, "/verification-failed", http.StatusFound)
+	//	        return
+	//	    }
+	//	    http.Redirect(w, r, "/verification-success", http.StatusFound)
+	//	}
+	VerificationUrl string `protobuf:"bytes,3,opt,name=verification_url,json=verificationUrl,proto3" json:"verification_url,omitempty"`
+	// URL to your FRONTEND page where users will reset their password.
+	// The SSO service appends ?token=<64-char-hex> to this URL when sending password reset emails.
+	//
+	// ⚠️ CRITICAL: This MUST point to a FRONTEND page, NOT an API endpoint!
+	// ⚠️ SECURITY: Passwords should NEVER be passed in URLs - only tokens should be in URLs.
+	//
+	// How it works:
+	//  1. User requests password reset (via ResetPassword RPC or during registration)
+	//  2. SSO sends email: "https://your-frontend.com/reset-password?token=abc123..."
+	//  3. User clicks → Your frontend page loads
+	//  4. Your frontend shows a form for entering new password
+	//  5. User enters password + confirmation (validated on frontend)
+	//  6. Your frontend calls SSO.ChangePassword({token, updated_password})
+	//
+	// Why frontend and not API:
+	//
+	//	❌ API endpoint would require password in URL or require POST from email (impossible)
+	//	✅ Frontend page collects password via form, then POSTs to API with password in body
 	//
 	// Examples:
 	//
-	//	Input:  "https://api-gateway.com/auth/verify-email"
-	//	Result: "https://api-gateway.com/auth/verify-email?token=64-char-hex-string"
+	//	❌ "https://api.your-app.com/change-password" (API endpoint, won't work)
+	//	❌ "https://sso.com/v1/auth/change-password" (SSO's API, passwords would be in URL)
+	//	✅ "https://your-app.com/reset-password" (frontend page with form)
+	//	✅ "https://app.your-app.com/auth/reset" (frontend page)
 	//
-	// On API gateway, extract the token from query parameters:
+	// Frontend implementation example (React):
 	//
-	//	token := r.URL.Query().Get("token")
+	//	function ResetPasswordPage() {
+	//	    const token = new URLSearchParams(window.location.search).get('token');
+	//	    const [password, setPassword] = useState('');
 	//
-	// Then call SSO's VerifyEmail(token) endpoint.
-	VerificationUrl string `protobuf:"bytes,3,opt,name=verification_url,json=verificationUrl,proto3" json:"verification_url,omitempty"`
-	// URL for password confirmation flows, used for multi-service password change
+	//	    const handleSubmit = async () => {
+	//	        await fetch('/api/change-password', {
+	//	            method: 'POST',
+	//	            body: JSON.stringify({ token, password })
+	//	        });
+	//	    };
+	//
+	//	    return <form onSubmit={handleSubmit}>
+	//	        <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+	//	        <button>Reset Password</button>
+	//	    </form>;
+	//	}
 	ConfirmPasswordUrl string `protobuf:"bytes,4,opt,name=confirm_password_url,json=confirmPasswordUrl,proto3" json:"confirm_password_url,omitempty"`
 	// Device fingerprint for security tracking
 	UserDeviceData *UserDeviceData `protobuf:"bytes,5,opt,name=user_device_data,json=userDeviceData,proto3" json:"user_device_data,omitempty"`
@@ -185,7 +253,19 @@ func (x *RegisterUserResponse) GetTokenData() *TokenData {
 // Request to verify email address
 type VerifyEmailRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Email verification token received via email link
+	// Email verification token received from the email link.
+	//
+	// Token format:
+	//   - Length: 64 characters
+	//   - Format: Hexadecimal (0-9, a-f)
+	//   - Single-use: Can only be verified once
+	//   - Expires: Typically after 24 hours (configurable by SSO)
+	//
+	// Where to get the token:
+	//   - From query parameter: r.URL.Query().Get("token")
+	//   - Email link format: https://your-app.com/verify?token=<64-char-hex>
+	//
+	// Example: "a1b2c3d4e5f6789012345678901234567890abcdefabcdef1234567890abcd"
 	Token         string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -389,7 +469,27 @@ type ResetPasswordRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Email address to send reset link to
 	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	// Base URL for password reset confirmation page
+	// URL to your FRONTEND page where users will reset their password.
+	// The SSO service appends ?token=<64-char-hex> to this URL when sending the password reset email.
+	//
+	// ⚠️ CRITICAL: This MUST point to a FRONTEND page, NOT an API endpoint!
+	// ⚠️ SECURITY: Passwords should NEVER be passed in URLs - only tokens should be in URLs.
+	//
+	// Flow:
+	//  1. SSO sends email: "https://your-frontend.com/reset-password?token=abc123..."
+	//  2. User clicks → Your frontend page loads with form
+	//  3. User enters new password (frontend validates password match)
+	//  4. Your frontend calls POST /v1/auth/change-password with {token, updated_password}
+	//
+	// Examples:
+	//
+	//	❌ "https://api.your-app.com/reset-password" (API endpoint, won't work)
+	//	✅ "https://your-app.com/reset-password" (frontend page with form)
+	//	✅ "https://app.your-domain.com/auth/reset" (frontend page)
+	//
+	// Note: This is the same concept as confirm_password_url in RegisterUserRequest.
+	//
+	//	It's a separate field to allow different URLs for different flows if needed.
 	ConfirmUrl    string `protobuf:"bytes,2,opt,name=confirm_url,json=confirmUrl,proto3" json:"confirm_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -479,9 +579,31 @@ func (*ResetPasswordResponse) Descriptor() ([]byte, []int) {
 // Request to change password using reset token
 type ChangePasswordRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Password reset token from email
+	// Password reset token from email.
+	//
+	// Token format:
+	//   - Length: 64 characters
+	//   - Format: Hexadecimal (0-9, a-f)
+	//   - Single-use: Can only be used once
+	//   - Expires: Typically after 15 minutes (configurable by SSO)
+	//
+	// Where to get the token:
+	//   - From query parameter on frontend: new URLSearchParams(window.location.search).get('token')
+	//   - Email link format: https://your-frontend.com/reset?token=<64-char-hex>
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	// New password in plain text
+	// New password in plain text (will be hashed by SSO).
+	//
+	// ⚠️ Password confirmation should be validated on the FRONTEND, not sent to API.
+	//
+	// Frontend should:
+	//  1. Collect password and confirm_password from user
+	//  2. Validate they match
+	//  3. Only send updated_password to API (not both fields)
+	//
+	// Why no confirm_password field:
+	//   - Password confirmation is a UX concern (preventing typos)
+	//   - Backend only needs the actual password
+	//   - If user makes typo, they can just reset again
 	UpdatedPassword string `protobuf:"bytes,2,opt,name=updated_password,json=updatedPassword,proto3" json:"updated_password,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
